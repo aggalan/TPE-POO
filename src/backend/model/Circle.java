@@ -2,19 +2,16 @@ package backend.model;
 
 public class Circle extends Ellipse {
     public Circle(Point centerPoint, double radius) {
-        super(centerPoint, radius, radius);
+        super(centerPoint, 2*radius, 2*radius);
     }
     @Override
     public String toString() {
-        return String.format("Círculo [Centro: %s, Radio: %.2f]", centerPoint, getsMayorAxis());
+        return String.format("Círculo [Centro: %s, Radio: %.2f]", centerPoint, getRadius());
     }
 
-    public Point getCenterPoint() {
-        return super.getCenterPoint();
-    }
 
     public double getRadius() {
-        return getsMayorAxis();
+        return getsMayorAxis()/2;
     }
 
 }

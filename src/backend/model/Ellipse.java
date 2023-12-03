@@ -1,6 +1,6 @@
 package backend.model;
 
-public class Ellipse implements Figure {
+public class Ellipse extends Figure {
 
     protected final Point centerPoint;
     protected final double sMayorAxis, sMinorAxis;
@@ -28,4 +28,11 @@ public class Ellipse implements Figure {
         return sMinorAxis;
     }
 
+    @Override
+    public void move(double moveX, double moveY) {
+
+    }
+
+
 }
+

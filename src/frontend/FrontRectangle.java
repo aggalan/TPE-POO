@@ -5,19 +5,23 @@ import backend.model.Point;
 import backend.model.Rectangle;
 import javafx.scene.canvas.GraphicsContext;
 
-public class FrontRectangle extends Rectangle implements FrontGc {
-
-    private GraphicsContext gc;
+public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
+    private T rectangle;
     public FrontRectangle(Point topLeft, Point bottomRight, GraphicsContext gc) {
-        super(topLeft, bottomRight);
-        this.gc = gc;
+        super(gc);
+        this.rectangle = (T) new Rectangle(topLeft, bottomRight);
     }
 
-    public void create(Figure figure) {
-        Rectangle rectangle = (Rectangle) figure;
-        gc.fillRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(),
-                Math.abs(rectangle.getTopLeftX() - rectangle.getBottomRightX()), Math.abs(rectangle.getTopLeftY() - rectangle.getBottomRightY()));
-        gc.strokeRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(),
-                Math.abs(rectangle.getTopLeftX() - rectangle.getBottomRightX()), Math.abs(rectangle.getTopLeftY() - rectangle.getBottomRightY()));
+//    public void create(FrontFigure<T> figure) {
+//        Rectangle rectangle = (Rectangle) figure;
+//        getGc().fillRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(),
+//                Math.abs(rectangle.getTopLeftX() - rectangle.getBottomRightX()), Math.abs(rectangle.getTopLeftY() - rectangle.getBottomRightY()));
+//        getGc().strokeRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(),
+//                Math.abs(rectangle.getTopLeftX() - rectangle.getBottomRightX()), Math.abs(rectangle.getTopLeftY() - rectangle.getBottomRightY()));
+//    }
+
+    @Override
+    public void create(FrontFigure<Figure> frontFigure) {
+
     }
 }

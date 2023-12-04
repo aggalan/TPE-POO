@@ -81,6 +81,14 @@ public class PaintPane extends BorderPane {
 			tool.setToggleGroup(tools);
 			tool.setCursor(Cursor.HAND);
 		}
+
+		Map<ToggleButton, Bifunction<Point, Point, FrontFigure> buttonMap = new HashMap<>();
+		buttonMap.put(toolsArr[1], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR));
+		buttonMap.put(toolsArr[2], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
+		buttonMap.put(toolsArr[3], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
+		buttonMap.put(toolsArr[4], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, CanvasState.DEFAULT_FILL_COLOR);
+
+		
 		VBox buttonsBox = new VBox(10);
 		buttonsBox.getChildren().addAll(toolsArr);
 		buttonsBox.getChildren().addAll(functionalities);

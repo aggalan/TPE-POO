@@ -193,8 +193,10 @@ public class PaintPane extends BorderPane {
 				}
 				if (found) {
 					statusPane.updateStatus(label.toString());
-				} else {
+				} else if (startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
+					statusPane.updateStatus("Ninguna figura encontrada");
+				}else {
 					//selectedFigure = null;
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}
@@ -231,6 +233,7 @@ public class PaintPane extends BorderPane {
 	}
 
 	private void redrawCanvas() {
+		System.out.println(selectedFigures.size() + "pito");
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(FrontFigure<? extends Figure> figure : canvasState) {
 			if(selectedFigures.contains(figure)){

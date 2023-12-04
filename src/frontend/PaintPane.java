@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 public class PaintPane extends BorderPane {
 
@@ -62,8 +63,6 @@ public class PaintPane extends BorderPane {
 	private StatusPane statusPane;
 
 	// Colores de relleno de cada figura
-	private Map<FrontFigure<? extends Figure>, Color> figureColorMap = new HashMap<>();
-
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
 		this.canvasState = canvasState;
 		this.statusPane = statusPane;
@@ -84,12 +83,12 @@ public class PaintPane extends BorderPane {
 
 		ToggleButton[] figuresArr = {rectangleButton, circleButton, squareButton, ellipseButton};
 
-		Map<ToggleButton, Bifunction<Point, Point, FrontFigure> buttonMap = new HashMap<>();
-		buttonMap.put(figuresArr[0], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR));
-		buttonMap.put(figuresArr[1], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
-		buttonMap.put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
-		buttonMap.put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, CanvasState.DEFAULT_FILL_COLOR);
-
+		Map<ToggleButton, BiFunction<Point, Point, FrontFigure<? extends Figure>>> buttonMap = new HashMap<>(){{
+			put(figuresArr[0], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, fillColorPicker.getValue()));
+			put(figuresArr[1], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, fillColorPicker.getValue()));
+			put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc,fillColorPicker.getValue()));
+			put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, fillColorPicker.getValue()));
+		}};
 		
 		VBox buttonsBox = new VBox(10);
 		buttonsBox.getChildren().addAll(toolsArr);
@@ -130,9 +129,9 @@ public class PaintPane extends BorderPane {
 
 			for (ToggleButton button : figuresArr) {
 				if(button.isSelected()){
-					figureFunction = buttonMap.get(button);
-					newFigure = figureFunction.apply(startPoint, endPoint);
-					canvasState.addFigure(newFigure);
+					BiFunction<Point, Point, FrontFigure<? extends Figure>> figureFunction = buttonMap.get(button);
+					FrontFigure<? extends Figure> newFigureAux = figureFunction.apply(startPoint, endPoint);
+					canvasState.add(newFigureAux);
 					// redraw canvas?
 				}
 			}
@@ -153,7 +152,6 @@ public class PaintPane extends BorderPane {
 			} else {
 				return ;
 			}
-			figureColorMap.put(newFigure, fillColorPicker.getValue());
 			canvasState.add(newFigure);
 			startPoint = null;
 			redrawCanvas();
@@ -237,7 +235,7 @@ public class PaintPane extends BorderPane {
 			}else {
 				gc.setStroke(CanvasState.LINE_COLOR);
 			}
-			gc.setFill(figureColorMap.get(figure));
+			gc.setFill(figure.getColor());
 			figure.create();
 		}
 	}

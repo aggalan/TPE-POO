@@ -23,7 +23,7 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public abstract void move(double diffX, double diffY){
+    public void move(double diffX, double diffY){
         getTopLeft().x += diffX;
 		getBottomRight().x += diffX;
 		getTopLeft().y += diffY;

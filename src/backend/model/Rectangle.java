@@ -13,6 +13,22 @@ public class Rectangle extends Figure {
         return topLeft;
     }
 
+    public double getTopLeftX() {
+        return getTopLeft().getX();
+    }
+
+    public double getTopLeftY() {
+        return getTopLeft().getY();
+    }
+
+    public double getBottomRightX() {
+        return getBottomRight().getX();
+    }
+
+    public double getBottomRightY() {
+        return getBottomRight().getY();
+    }
+
     public Point getBottomRight() {
         return bottomRight;
     }

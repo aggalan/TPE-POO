@@ -28,6 +28,14 @@ public class Ellipse extends Figure {
         return sMinorAxis;
     }
 
+    public double getCenterPointX() {
+        return getCenterPoint().getX();
+    }
+
+    public double getCenterPointY() {
+        return getCenterPoint().getY();
+    }
+
     @Override
     public void move(double diffX, double diffY){
         getCenterPoint().x += diffX;

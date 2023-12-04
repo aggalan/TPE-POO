@@ -33,7 +33,13 @@ public class Ellipse extends Figure {
         getCenterPoint().x += diffX;
         getCenterPoint().y += diffY;
     }
-    
+
+
+    @Override
+    public boolean belongsInRectangle(Rectangle imaginaryRectangle) {
+        return false;
+    }
+
     @Override
     public boolean belongs(Point eventPoint){
         return ((Math.pow(eventPoint.getX() - getCenterPoint().getX(), 2) / Math.pow(getsMayorAxis(), 2)) + (Math.pow(eventPoint.getY() - getCenterPoint().getY(), 2) / Math.pow(getsMinorAxis(), 2))) <= 0.30;

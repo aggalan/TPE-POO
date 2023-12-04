@@ -35,10 +35,12 @@ public class Rectangle extends Figure {
         return eventPoint.getX() > getTopLeft().getX() && eventPoint.getX() < getBottomRight().getX() && eventPoint.getY() > getTopLeft().getY() && eventPoint.getY() < getBottomRight().getY();
     }
 // ver si se puede modularizar
+
+
     @Override
     public boolean belongsInRectangle(Rectangle imaginaryRectangle) {
-        return imaginaryRectangle.getTopLeft().getX() > getTopLeft().getX() && imaginaryRectangle.getBottomRight().getX() < getBottomRight().getX()
-                && imaginaryRectangle.getTopLeft().getY() > getTopLeft().getY() && imaginaryRectangle.getBottomRight().getY() < getBottomRight().getY();
+        return imaginaryRectangle.getTopLeft().getX() <= getTopLeft().getX() && imaginaryRectangle.getBottomRight().getX() >= getBottomRight().getX()
+                && imaginaryRectangle.getTopLeft().getY() <= getTopLeft().getY() && imaginaryRectangle.getBottomRight().getY() >= getBottomRight().getY();
     }
 
 

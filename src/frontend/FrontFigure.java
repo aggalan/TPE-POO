@@ -16,6 +16,10 @@ public abstract class FrontFigure<T extends Figure> {
         this.color = color;
     }
 
+    @Override
+    public String toString() {
+        return figure.toString();
+    }
 
     public T getFigure(){
         return figure;

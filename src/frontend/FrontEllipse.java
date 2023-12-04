@@ -8,7 +8,6 @@ public class FrontEllipse<T extends Ellipse> extends FrontFigure<T>{
 
     public FrontEllipse(T ellipse, GraphicsContext gc, Color color) {
         super(gc, ellipse, color);
-
     }
 
     @Override

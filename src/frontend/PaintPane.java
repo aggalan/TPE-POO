@@ -138,7 +138,7 @@ public class PaintPane extends BorderPane {
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
 						selectedFigures.add(figure);
-						//System.out.println(figure);
+						System.out.println(figure);
 					}
 				}
 				startPoint = null;

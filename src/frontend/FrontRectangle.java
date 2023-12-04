@@ -2,6 +2,7 @@ package frontend;
 
 import backend.model.Rectangle;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
     private T rectangle;

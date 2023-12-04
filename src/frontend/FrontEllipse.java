@@ -2,6 +2,7 @@ package frontend;
 
 import backend.model.Ellipse;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class FrontEllipse<T extends Ellipse> extends FrontFigure<T>{
 

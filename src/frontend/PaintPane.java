@@ -3,14 +3,13 @@ package frontend;
 import backend.CanvasState;
 import backend.model.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -118,19 +117,19 @@ public class PaintPane extends BorderPane {
 			}
 			FrontFigure<? extends Figure> newFigure = null;
 			if(rectangleButton.isSelected()) {
-				newFigure = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc);
+				newFigure = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
 			}
 			else if(circleButton.isSelected()) {
 				double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-				newFigure = new FrontEllipse<>(new Circle(startPoint, circleRadius), gc);
+				newFigure = new FrontEllipse<>(new Circle(startPoint, circleRadius), gc, CanvasState.DEFAULT_FILL_COLOR);
 			} else if(squareButton.isSelected()) {
 				double size = Math.abs(endPoint.getX() - startPoint.getX());
-				newFigure = new FrontRectangle<>(new Square(startPoint, size), gc);
+				newFigure = new FrontRectangle<>(new Square(startPoint, size), gc, CanvasState.DEFAULT_FILL_COLOR);
 			} else if(ellipseButton.isSelected()) {
 				Point centerPoint = new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2));
 				double sMayorAxis = Math.abs(endPoint.x - startPoint.x);
 				double sMinorAxis = Math.abs(endPoint.y - startPoint.y);
-				newFigure = new FrontEllipse<>(new Ellipse(centerPoint, sMayorAxis, sMinorAxis), gc);
+				newFigure = new FrontEllipse<>(new Ellipse(centerPoint, sMayorAxis, sMinorAxis), gc, CanvasState.DEFAULT_FILL_COLOR);
 			} else {
 				return ;
 			}

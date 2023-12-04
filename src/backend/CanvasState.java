@@ -2,6 +2,7 @@ package backend;
 
 import backend.model.Figure;
 import frontend.FrontFigure;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 

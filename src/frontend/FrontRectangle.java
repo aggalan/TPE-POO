@@ -6,8 +6,6 @@ import javafx.scene.paint.Color;
 
 public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
     private T rectangle;
-    private T rectangle;
-
 
     public FrontRectangle(T rectangle, GraphicsContext gc, Color color) {
         super(gc, rectangle, color);

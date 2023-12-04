@@ -53,13 +53,13 @@ public class PaintPane extends BorderPane {
 	private Point startPoint;
 
 	// Seleccionar una figura
-	private Figure selectedFigure;
+	private FrontFigure<? extends Figure> selectedFigure;
 
 	// StatusBar
 	private StatusPane statusPane;
 
 	// Colores de relleno de cada figura
-	private Map<Figure, Color> figureColorMap = new HashMap<>();
+	private Map<FrontFigure<? extends Figure>, Color> figureColorMap = new HashMap<>();
 
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
 		this.canvasState = canvasState;
@@ -99,26 +99,26 @@ public class PaintPane extends BorderPane {
 			if(endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
 				return ;
 			}
-			Figure newFigure = null;
+			FrontFigure<? extends Figure> newFigure = null;
 			if(rectangleButton.isSelected()) {
-				newFigure = new Rectangle(startPoint, endPoint);
+				newFigure = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc);
 			}
 			else if(circleButton.isSelected()) {
 				double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-				newFigure = new Circle(startPoint, circleRadius);
+				newFigure = new FrontEllipse<>(new Circle(startPoint, circleRadius), gc);
 			} else if(squareButton.isSelected()) {
 				double size = Math.abs(endPoint.getX() - startPoint.getX());
-				newFigure = new Square(startPoint, size);
+				newFigure = new FrontRectangle<>(new Square(startPoint, size), gc);
 			} else if(ellipseButton.isSelected()) {
 				Point centerPoint = new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2));
 				double sMayorAxis = Math.abs(endPoint.x - startPoint.x);
 				double sMinorAxis = Math.abs(endPoint.y - startPoint.y);
-				newFigure = new Ellipse(centerPoint, sMayorAxis, sMinorAxis);
+				newFigure = new FrontEllipse<>(new Ellipse(centerPoint, sMayorAxis, sMinorAxis), gc);
 			} else {
 				return ;
 			}
 			figureColorMap.put(newFigure, fillColorPicker.getValue());
-			canvasState.addFigure(newFigure);
+			canvasState.add(newFigure);
 			startPoint = null;
 			redrawCanvas();
 		});
@@ -127,7 +127,7 @@ public class PaintPane extends BorderPane {
 			Point eventPoint = new Point(event.getX(), event.getY());
 			boolean found = false;
 			StringBuilder label = new StringBuilder();
-			for(Figure figure : canvasState.figures()) {
+			for(FrontFigure<? extends Figure> figure : canvasState) {
 				if(figureBelongs(figure, eventPoint)) {
 					found = true;
 					label.append(figure.toString());
@@ -145,7 +145,7 @@ public class PaintPane extends BorderPane {
 				Point eventPoint = new Point(event.getX(), event.getY());
 				boolean found = false;
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
-				for (Figure figure : canvasState.figures()) {
+				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if(figureBelongs(figure, eventPoint)) {
 						found = true;
 						selectedFigure = figure;
@@ -167,14 +167,14 @@ public class PaintPane extends BorderPane {
 				Point eventPoint = new Point(event.getX(), event.getY());
 				double diffX = (eventPoint.getX() - startPoint.getX()) / 100;
 				double diffY = (eventPoint.getY() - startPoint.getY()) / 100;
-				selectedFigure.move(diffX, diffY);
+				selectedFigure.getFigure().move(diffX, diffY);
 				redrawCanvas();
 			}
 		});
 
 		deleteButton.setOnAction(event -> {
 			if (selectedFigure != null) {
-				canvasState.deleteFigure(selectedFigure);
+				canvasState.remove(selectedFigure);
 				selectedFigure = null;
 				redrawCanvas();
 			}
@@ -186,31 +186,19 @@ public class PaintPane extends BorderPane {
 
 	private void redrawCanvas() {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		for(Figure figure : canvasState.figures()) {
+		for(FrontFigure<? extends Figure> figure : canvasState) {
 			if(figure == selectedFigure) {
 				gc.setStroke(Color.RED);
 			} else {
 				gc.setStroke(lineColor);
 			}
 			gc.setFill(figureColorMap.get(figure));
-			if(figure instanceof Rectangle) {
-				Rectangle rectangle = (Rectangle) figure;
-				gcFront.createRectangle(rectangle);
-			} else if(figure instanceof Circle) {
-				Circle circle = (Circle) figure;
-				gcFront.createCircle(circle);
-			} else if(figure instanceof Square) {
-				Square square = (Square) figure;
-				gcFront.createSquare(square);
-			} else if(figure instanceof Ellipse) {
-				Ellipse ellipse = (Ellipse) figure;
-				gcFront.createElipse(ellipse);
-			}
+			figure.create();
 		}
 	}
 
-	private boolean figureBelongs(Figure figure, Point eventPoint) {
-		return figure.belongs(eventPoint);
+	private boolean figureBelongs(FrontFigure<? extends Figure> figure, Point eventPoint) {
+		return figure.getFigure().belongs(eventPoint);
 	}
 		
 }

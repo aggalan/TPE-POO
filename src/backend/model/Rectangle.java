@@ -23,6 +23,14 @@ public class Rectangle extends Figure {
     }
 
     @Override
+    public abstract void move(double diffX, double diffY){
+        getTopLeft().x += diffX;
+		getBottomRight().x += diffX;
+		getTopLeft().y += diffY;
+		getBottomRight().y += diffY;
+    }
+
+    @Override
     public boolean belongs(Point eventPoint){
         return eventPoint.getX() > getTopLeft().getX() && eventPoint.getX() < getBottomRight().getX() && eventPoint.getY() > getTopLeft().getY() && eventPoint.getY() < getBottomRight().getY();
     }

@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -35,6 +36,13 @@ public class PaintPane extends BorderPane {
 	private ToggleButton squareButton = new ToggleButton("Cuadrado");
 	private ToggleButton ellipseButton = new ToggleButton("Elipse");
 	private ToggleButton deleteButton = new ToggleButton("Borrar");
+	private Button groupButton = new Button("Agrupar");
+	private Button ungroupButton = new Button("Desagrupar");
+	private Button turnRightButton = new Button("Girar D");
+	private Button flipHorizontalButton = new Button("Voltear H");
+	private Button flipVerticalButton = new Button("Voltear V");
+	private Button scaleButton = new Button("Escalar +");
+	private Button descaleButton = new Button("Escalar -");
 
 	// Selector de color de relleno
 	private ColorPicker fillColorPicker = new ColorPicker(defaultFillColor);
@@ -54,6 +62,13 @@ public class PaintPane extends BorderPane {
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
 		this.canvasState = canvasState;
 		this.statusPane = statusPane;
+
+		Button[] functionalities = {groupButton , ungroupButton, turnRightButton, flipHorizontalButton, flipVerticalButton, scaleButton, descaleButton};
+		for(Button functionality : functionalities){
+			functionality.setMinWidth(90);
+			functionality.setCursor(Cursor.HAND);
+		}
+
 		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, deleteButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
@@ -63,6 +78,7 @@ public class PaintPane extends BorderPane {
 		}
 		VBox buttonsBox = new VBox(10);
 		buttonsBox.getChildren().addAll(toolsArr);
+		buttonsBox.getChildren().addAll(functionalities);
 		buttonsBox.getChildren().add(fillColorPicker);
 		buttonsBox.setPadding(new Insets(5));
 		buttonsBox.setStyle("-fx-background-color: #999");

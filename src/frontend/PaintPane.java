@@ -222,5 +222,6 @@ public class PaintPane extends BorderPane {
 	boolean figureBelongs(Figure figure, Point eventPoint) {
 		
 		return figure.belongs(eventPoint);
-		
 	}
+		
+}

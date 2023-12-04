@@ -82,11 +82,13 @@ public class PaintPane extends BorderPane {
 			tool.setCursor(Cursor.HAND);
 		}
 
+		ToggleButton[] figuresArr = {rectangleButton, circleButton, squareButton, ellipseButton};
+
 		Map<ToggleButton, Bifunction<Point, Point, FrontFigure> buttonMap = new HashMap<>();
-		buttonMap.put(toolsArr[1], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR));
-		buttonMap.put(toolsArr[2], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
-		buttonMap.put(toolsArr[3], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
-		buttonMap.put(toolsArr[4], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, CanvasState.DEFAULT_FILL_COLOR);
+		buttonMap.put(figuresArr[0], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR));
+		buttonMap.put(figuresArr[1], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
+		buttonMap.put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, CanvasState.DEFAULT_FILL_COLOR);
+		buttonMap.put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, CanvasState.DEFAULT_FILL_COLOR);
 
 		
 		VBox buttonsBox = new VBox(10);
@@ -125,21 +127,17 @@ public class PaintPane extends BorderPane {
 				return ;
 			}
 			FrontFigure<? extends Figure> newFigure = null;
-			if(rectangleButton.isSelected()) {
-				newFigure = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
+
+			for (ToggleButton button : figuresArr) {
+				if(button.isSelected()){
+					figureFunction = buttonMap.get(button);
+					newFigure = figureFunction.apply(startPoint, endPoint);
+					canvasState.addFigure(newFigure);
+					// redraw canvas?
+				}
 			}
-			else if(circleButton.isSelected()) {
-				double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-				newFigure = new FrontEllipse<>(new Circle(startPoint, circleRadius), gc, CanvasState.DEFAULT_FILL_COLOR);
-			} else if(squareButton.isSelected()) {
-				double size = Math.abs(endPoint.getX() - startPoint.getX());
-				newFigure = new FrontRectangle<>(new Square(startPoint, size), gc, CanvasState.DEFAULT_FILL_COLOR);
-			} else if(ellipseButton.isSelected()) {
-				Point centerPoint = new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2));
-				double sMayorAxis = Math.abs(endPoint.x - startPoint.x);
-				double sMinorAxis = Math.abs(endPoint.y - startPoint.y);
-				newFigure = new FrontEllipse<>(new Ellipse(centerPoint, sMayorAxis, sMinorAxis), gc, CanvasState.DEFAULT_FILL_COLOR);
-			} else if(selectionButton.isSelected() && !startPoint.equals(endPoint)) {
+			
+			if(selectionButton.isSelected() && !startPoint.equals(endPoint)) {
 				newFigure = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
 //				figureColorMap.put(newFigure, Color.color(0,0,0,0));
 //				canvasState.addFigure(newFigure);

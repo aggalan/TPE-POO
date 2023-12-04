@@ -125,19 +125,21 @@ public class PaintPane extends BorderPane {
 			if(endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
 				return ;
 			}
-			FrontFigure<? extends Figure> newFigure = null;
+			FrontFigure<? extends Figure> newFigureAux = null;
+
+			boolean found = false;
 
 			for (ToggleButton button : figuresArr) {
 				if(button.isSelected()){
+					found = true;
 					BiFunction<Point, Point, FrontFigure<? extends Figure>> figureFunction = buttonMap.get(button);
-					FrontFigure<? extends Figure> newFigureAux = figureFunction.apply(startPoint, endPoint);
-					canvasState.add(newFigureAux);
+					newFigureAux = figureFunction.apply(startPoint, endPoint);
 					// redraw canvas?
 				}
 			}
 			
 			if(selectionButton.isSelected() && !startPoint.equals(endPoint)) {
-				newFigure = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
+				newFigureAux = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
 //				figureColorMap.put(newFigure, Color.color(0,0,0,0));
 //				canvasState.addFigure(newFigure);
 				for (FrontFigure<? extends Figure> figure : canvasState) {
@@ -149,10 +151,11 @@ public class PaintPane extends BorderPane {
 				startPoint = null;
 				redrawCanvas();
 				return;
-			} else {
-				return ;
 			}
-			canvasState.add(newFigure);
+			if (!found) {
+				return;
+			}
+			canvasState.add(newFigureAux);
 			startPoint = null;
 			redrawCanvas();
 		});

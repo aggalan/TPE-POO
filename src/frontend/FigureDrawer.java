@@ -1,7 +1,6 @@
 package frontend;
 
-import backend.model.Ellipse;
-import backend.model.Rectangle;
+import backend.model.*;
 import javafx.scene.canvas.GraphicsContext;
 
 public class FigureDrawer{
@@ -22,5 +21,13 @@ public class FigureDrawer{
     public void createElipse(Ellipse ellipse) {
         gc.strokeOval(ellipse.getCenterPointX() - (ellipse.getsMayorAxis() / 2), ellipse.getCenterPointY() - (ellipse.getsMinorAxis() / 2), ellipse.getsMayorAxis(), ellipse.getsMinorAxis());
         gc.fillOval(ellipse.getCenterPointX() - (ellipse.getsMayorAxis() / 2), ellipse.getCenterPointY() - (ellipse.getsMinorAxis() / 2), ellipse.getsMayorAxis(), ellipse.getsMinorAxis());
+    }
+
+    public void createSquare(Square square) {
+        createRectangle(new Rectangle(square.getTopLeft(), square.getBottomRight()));
+    }
+
+    public void createCircle(Circle circle) {
+        createElipse(new Ellipse(circle.getCenterPoint(), circle.getsMayorAxis(), circle.getsMinorAxis()));
     }
 }

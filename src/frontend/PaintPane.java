@@ -28,8 +28,8 @@ public class PaintPane extends BorderPane {
 
 	FigureDrawer gcFront = new FigureDrawer(gc);
 
-	private Color lineColor = Color.BLACK;
-	private Color defaultFillColor = Color.YELLOW;
+	private final Color lineColor = Color.BLACK;
+	private final Color defaultFillColor = Color.YELLOW;
 
 	// Botones Barra Izquierda
 	private ToggleButton selectionButton = new ToggleButton("Seleccionar");
@@ -45,6 +45,9 @@ public class PaintPane extends BorderPane {
 	private Button flipVerticalButton = new Button("Voltear V");
 	private Button scaleButton = new Button("Escalar +");
 	private Button descaleButton = new Button("Escalar -");
+	private final CheckBox checkBox1 = new CheckBox("Sombra");
+	private final CheckBox checkBox2 = new CheckBox("Gradiente");
+	private final CheckBox checkBox3 = new CheckBox("Biselado");
 
 	// Selector de color de relleno
 	private ColorPicker fillColorPicker = new ColorPicker(defaultFillColor);
@@ -86,6 +89,20 @@ public class PaintPane extends BorderPane {
 		buttonsBox.setStyle("-fx-background-color: #999");
 		buttonsBox.setPrefWidth(100);
 		gc.setLineWidth(1);
+
+		HBox effect = new HBox(10);
+		Label label1 = new Label("Efectos:");
+		CheckBox[] effects = {checkBox1, checkBox2, checkBox3};
+		effect.getChildren().addAll(label1, checkBox1, checkBox2, checkBox3);
+		for(CheckBox checkbox : effects){
+			checkbox.setMinWidth(10);
+			checkbox.setCursor(Cursor.HAND);
+		}
+		effect.setAlignment(Pos.CENTER);
+		effect.setStyle("-fx-background-color: #999");
+		BorderPane topPane = new BorderPane();
+		topPane.setTop(effect);
+		setTop(topPane);
 
 		canvas.setOnMousePressed(event -> {
 			startPoint = new Point(event.getX(), event.getY());
@@ -187,12 +204,12 @@ public class PaintPane extends BorderPane {
 	private void redrawCanvas() {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(FrontFigure<? extends Figure> figure : canvasState) {
-			if(figure == selectedFigure) {
+			if(canvasState.isSelected(figure)){
 				gc.setStroke(Color.RED);
-			} else {
-				gc.setStroke(lineColor);
+			}else {
+				gc.setStroke(CanvasState.LINE_COLOR);
 			}
-			gc.setFill(figureColorMap.get(figure));
+			gc.setFill(figure.getColor());
 			figure.create();
 		}
 	}

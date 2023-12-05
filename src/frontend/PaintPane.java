@@ -213,6 +213,7 @@ public class PaintPane extends BorderPane {
 								selectedFigures.clear();
 								selectedFigures.addAll(group);
 								groupFound = true;
+								label.append(group);
 								break;
 							}
 						}

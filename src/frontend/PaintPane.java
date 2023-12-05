@@ -119,6 +119,7 @@ public class PaintPane extends BorderPane {
 
 		canvas.setOnMousePressed(event -> {
 			startPoint = new Point(event.getX(), event.getY());
+			selectedFigures.clear();
 		});
 
 

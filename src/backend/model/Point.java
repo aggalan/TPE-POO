@@ -11,6 +11,11 @@ public class Point {
         this.y = y;
     }
 
+    public void movePoint(double x, double y) {     // Point tiene el funcionamiento de un MovablePoint
+        this.x += x;
+        this.y += y;
+    }
+
     public double getX() {
         return x;
     }

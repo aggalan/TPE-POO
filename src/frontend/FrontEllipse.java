@@ -3,6 +3,7 @@ package frontend;
 import backend.model.Ellipse;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class FrontEllipse<T extends Ellipse> extends FrontFigure<T>{
 
@@ -11,13 +12,11 @@ public class FrontEllipse<T extends Ellipse> extends FrontFigure<T>{
     }
 
     @Override
-    public void create() {
+    public void create(double offset) {
         Ellipse ellipse = super.getFigure();
         super.getGc().strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getWidth() / 2), ellipse.getCenterPoint().getY() - (ellipse.getHeight() / 2), ellipse.getWidth(), ellipse.getHeight());
-        super.getGc().fillOval(ellipse.getCenterPoint().getX() - (ellipse.getWidth() / 2), ellipse.getCenterPoint().getY() - (ellipse.getHeight() / 2), ellipse.getWidth(), ellipse.getHeight());
+        super.getGc().fillOval(ellipse.getCenterPoint().getX() - (ellipse.getWidth() / 2) + offset, ellipse.getCenterPoint().getY() - (ellipse.getHeight() / 2) + offset, ellipse.getWidth(), ellipse.getHeight());
     }
-
-
 
 }
 

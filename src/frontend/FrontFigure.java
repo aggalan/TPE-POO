@@ -3,15 +3,18 @@ package frontend;
 import backend.model.Figure;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public abstract class FrontFigure<T extends Figure> {
 
     private GraphicsContext gc;
     private T figure;
     private final Color color;
-    private boolean shadowStatus = false;
+    protected boolean shadowStatus = false;
     private boolean gradientStatus = false;
     private boolean beveldStatus = false;
+
+    protected boolean isShadow = false;
 
     public FrontFigure(GraphicsContext gc, T figure, Color color) {
         this.gc = gc;
@@ -43,5 +46,14 @@ public abstract class FrontFigure<T extends Figure> {
     public GraphicsContext getGc() {
         return gc;
     }
-    public abstract void create();
+    public abstract void create(double offset);
+
+    public void createShadow() {
+        Paint aux = getGc().getFill();
+        getGc().setLineWidth(0);
+        getGc().setFill(Color.GRAY);
+        create(10);
+        getGc().setLineWidth(1);
+        getGc().setFill(aux);
+    }
 }

@@ -8,6 +8,7 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -314,13 +315,20 @@ public class PaintPane extends BorderPane {
 		//System.out.println(selectedFigures.size() + "pito");
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(FrontFigure<? extends Figure> figure : canvasState) {
-			if(selectedFigures.contains(figure)){
+			if(selectedFigures.contains(figure) && !figure.isShadow){
 				gc.setStroke(Color.RED);
 			}else {
 				gc.setStroke(CanvasState.LINE_COLOR);
 			}
 			gc.setFill(figure.getColor());
-			figure.create();
+
+
+			if (figure.shadowStatus) {
+				figure.createShadow();
+			}
+			figure.create(0);
+
+
 		}
 	}
 

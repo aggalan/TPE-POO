@@ -11,7 +11,7 @@ public abstract class FrontFigure<T extends Figure> {
     private final Color color;
     private boolean shadowStatus = false;
     private boolean gradientStatus = false;
-    private boolean beveldStatus false;
+    private boolean beveldStatus = false;
 
     public FrontFigure(GraphicsContext gc, T figure, Color color) {
         this.gc = gc;

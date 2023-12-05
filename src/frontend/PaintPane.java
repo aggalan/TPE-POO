@@ -207,6 +207,7 @@ public class PaintPane extends BorderPane {
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 
 					if(figureBelongs(figure, eventPoint)) {
+						groupFound = false;
 						for (ShapeGroup group : shapeGroups) {
 							if (group.contains(figure)) {
 								selectedFigures.clear();
@@ -218,7 +219,6 @@ public class PaintPane extends BorderPane {
 						if (!groupFound) {
 							selectedFigures.clear(); //esto hace que no se seleccionen 2 si hay una arriba de la otra
 							selectedFigures.add(figure);
-							//selectedFigure = figure;
 							label.append(figure.toString());
 						}
 						found = true;

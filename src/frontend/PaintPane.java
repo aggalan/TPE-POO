@@ -158,9 +158,6 @@ public class PaintPane extends BorderPane {
 			}
 			
 			if(selectionButton.isSelected() && !startPoint.equals(endPoint)) {
-				newFigureAux = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
-//				figureColorMap.put(newFigure, Color.color(0,0,0,0));
-//				canvasState.addFigure(newFigure);
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
 						for (ShapeGroup group : shapeGroups) {
@@ -280,7 +277,6 @@ public class PaintPane extends BorderPane {
 	}
 
 	private void redrawCanvas() {
-		//System.out.println(selectedFigures.size() + "pito");
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(FrontFigure<? extends Figure> figure : canvasState) {
 			if(selectedFigures.contains(figure) && !figure.isShadow){

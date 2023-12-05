@@ -140,12 +140,8 @@ public class PaintPane extends BorderPane {
 			if (selectedFigures.isEmpty() || shapeGroups.isEmpty()) {
 				return;
 			}
-			Iterator<ShapeGroup> auxIt = shapeGroups.iterator();
-			while (auxIt.hasNext()) {
-				if (selectedFigures.containsAll(auxIt.next())) { //muy poco eficiente, pero anda. ver q onda
-					auxIt.remove();
-				}
-			}
+
+            shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
 			selectedFigures.clear();
 			redrawCanvas();
 		});
@@ -168,10 +164,7 @@ public class PaintPane extends BorderPane {
 
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
-			if(startPoint == null) {
-				return ;
-			}
-			if(endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
+			if(startPoint == null || endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
 				return ;
 			}
 			FrontFigure<? extends Figure> newFigureAux = null;
@@ -200,7 +193,6 @@ public class PaintPane extends BorderPane {
 							}
 						}
 						selectedFigures.add(figure);
-						//System.out.println(figure);
 					}
 				}
 				startPoint = null;
@@ -306,51 +298,17 @@ public class PaintPane extends BorderPane {
 			}
 		});
 
-		turnRightButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				for (FrontFigure<? extends Figure> figure : selectedFigures) {
-					figure.getFigure().rotate();
-				}
-				redrawCanvas();
-			}
+		turnRightButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().rotate());});
 
-		});
+		flipVerticalButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().flipVertically());});
 
-		flipVerticalButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				for (FrontFigure<? extends Figure> figure : selectedFigures) {
-					figure.getFigure().flipVertically();
-				}
-				redrawCanvas();
-			}
-		});
+		flipHorizontalButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().flipHorizontally());});
 
-		flipHorizontalButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				for (FrontFigure<? extends Figure> figure : selectedFigures) {
-					figure.getFigure().flipHorizontally();
-				}
-				redrawCanvas();
-			}
-		});
+		scaleButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().scale());});
 
-		scaleButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				for (FrontFigure<? extends Figure> figure : selectedFigures) {
-					figure.getFigure().scale();
-				}
-				redrawCanvas();
-			}
-		});
+		descaleButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().descale());});
 
-		descaleButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				for (FrontFigure<? extends Figure> figure : selectedFigures) {
-					figure.getFigure().descale();
-				}
-				redrawCanvas();
-			}
-		});
+		buttonsBox.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
 
 		setLeft(buttonsBox);
 		setRight(canvas);

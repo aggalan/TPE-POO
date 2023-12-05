@@ -150,6 +150,21 @@ public class PaintPane extends BorderPane {
 			redrawCanvas();
 		});
 
+		//sombra
+		checkBox1.setOnAction(event -> {
+		if(!selectedFigures.isEmpty()){
+			for (FrontFigure<? extends Figure> figure : selectedFigures) {
+				if(checkBox1.isSelected()) {
+					applyShadow(figure);
+				}
+				else{
+					removeShadow(figure);
+				}
+			}
+			redrawCanvas();
+		}
+		});
+
 
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());

@@ -346,7 +346,7 @@ public class PaintPane extends BorderPane {
 		descaleButton.setOnAction(event -> {
 			if(!selectedFigures.isEmpty()){
 				for (FrontFigure<? extends Figure> figure : selectedFigures) {
-					figure.getFigure().deScale();
+					figure.getFigure().descale();
 				}
 				redrawCanvas();
 			}

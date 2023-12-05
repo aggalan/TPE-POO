@@ -279,6 +279,16 @@ public class PaintPane extends BorderPane {
 			redrawCanvas();
 		}));
 
+		checkBoxGradient.setOnAction(event -> selectedFigures.forEach(figure -> {
+			if(checkBoxGradient.isSelected()) {
+				figure.applyGradient();
+			}
+			else{
+				figure.removeGradient();
+			}
+			redrawCanvas();
+		}));
+
 		groupButton.setOnAction(event -> groupButtonAction());
 
 		ungroupButton.setOnAction(event -> ungroupButtonAction());

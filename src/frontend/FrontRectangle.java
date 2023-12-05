@@ -3,6 +3,7 @@ package frontend;
 import backend.model.Rectangle;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 
 public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
     private T rectangle;
@@ -14,9 +15,9 @@ public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
     public void create() {
         Rectangle rectangle = super.getFigure();
         getGc().fillRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(),
-                Math.abs(rectangle.getTopLeftX() - rectangle.getBottomRightX()), Math.abs(rectangle.getTopLeftY() - rectangle.getBottomRightY()));
+                rectangle.getWidth(), rectangle.getHeight());
         getGc().strokeRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(),
-                Math.abs(rectangle.getTopLeftX() - rectangle.getBottomRightX()), Math.abs(rectangle.getTopLeftY() - rectangle.getBottomRightY()));
+                rectangle.getWidth(), rectangle.getHeight());
     }
 
 

@@ -8,13 +8,16 @@ public abstract class FrontFigure<T extends Figure> {
 
     private GraphicsContext gc;
     private T figure;
-    private final javafx.scene.paint.Color color;
+    private final Color color;
 
     public FrontFigure(GraphicsContext gc, T figure, Color color) {
         this.gc = gc;
         this.figure = figure;
         this.color = color;
     }
+
+
+
 
     @Override
     public String toString() {

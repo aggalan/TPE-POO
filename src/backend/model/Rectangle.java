@@ -2,12 +2,44 @@ package backend.model;
 
 public class Rectangle extends Figure {
 
-    private final Point topLeft, bottomRight;
+    private Point  topLeft;
+    private Point bottomRight;
+    private double height, width;
+
+
 
     public Rectangle(Point topLeft, Point bottomRight) {
+
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
+        this.width = Math.abs(topLeft.getX() - bottomRight.getX());
+        this.height = Math.abs(topLeft.getY() - bottomRight.getY());
+
     }
+
+    private Point getCenterPoint(){
+        return new Point((bottomRight.getX() + topLeft.getX())/2, (topLeft.getY() + bottomRight.getY())/2);
+    }
+
+    public void rotate() {
+        Point centerPoint = getCenterPoint();
+        topLeft = new Point(centerPoint.getX() - height/2, centerPoint.getY() - width/2 );
+        bottomRight = new Point(centerPoint.getX() + height/2, centerPoint.getY() + width/2);
+        double temp = width;
+        width = getHeight();
+        height = temp;
+    }
+
+
+
+    public double getHeight() {
+        return height;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
 
     public Point getTopLeft() {
         return topLeft;
@@ -39,18 +71,17 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public void move(double diffX, double diffY){
-        getTopLeft().x += diffX;
-		getBottomRight().x += diffX;
-		getTopLeft().y += diffY;
-		getBottomRight().y += diffY;
+    public void move(double diffX, double diffY) {
+        topLeft.movePoint(diffX, diffY);
+        bottomRight.movePoint(diffX, diffY);
+
+
     }
 
     @Override
     public boolean belongs(Point eventPoint){
         return eventPoint.getX() > getTopLeft().getX() && eventPoint.getX() < getBottomRight().getX() && eventPoint.getY() > getTopLeft().getY() && eventPoint.getY() < getBottomRight().getY();
     }
-// ver si se puede modularizar
 
 
     @Override

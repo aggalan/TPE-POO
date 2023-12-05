@@ -176,9 +176,6 @@ public class PaintPane extends BorderPane {
 				newFigureAux = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
 //				figureColorMap.put(newFigure, Color.color(0,0,0,0));
 //				canvasState.addFigure(newFigure);
-
-				boolean addedGroup = false;
-
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
 						for (ShapeGroup group : shapeGroups) {

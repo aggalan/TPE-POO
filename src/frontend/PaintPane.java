@@ -153,10 +153,24 @@ public class PaintPane extends BorderPane {
 					}
 				}
 				startPoint = null;
+
+				checkBoxShadow.setSelected(selectedFigures.isEmpty() || (selectedFigures.iterator().next().shadowStatus && selectedFigures.size() == 1));
+				Iterator<FrontFigure<? extends Figure>> auxIt = selectedFigures.iterator();
+				while (auxIt.hasNext()) {
+					boolean status = auxIt.next().shadowStatus;
+					if (auxIt.hasNext() && auxIt.next().shadowStatus != status) {
+						checkBoxShadow.allowIndeterminateProperty();
+						checkBoxShadow.setIndeterminate(true);
+						break;
+					}
+				}
+
 				redrawCanvas();
 				return;
 			}
 			if (!found) {
+				checkBoxShadow.setAllowIndeterminate(false);
+				checkBoxShadow.setIndeterminate(false);
 				return;
 			}
 			canvasState.add(newFigureAux);
@@ -209,14 +223,27 @@ public class PaintPane extends BorderPane {
 					}
 				}
 				if (found) {
-					checkBoxShadow.setSelected(selectedFigures.isEmpty() || selectedFigures.iterator().next().shadowStatus);
+					checkBoxShadow.setSelected(selectedFigures.isEmpty() || (selectedFigures.iterator().next().shadowStatus && selectedFigures.size() == 1));
+					Iterator<FrontFigure<? extends Figure>> auxIt = selectedFigures.iterator();
+
+					while (auxIt.hasNext()) {
+						boolean status = auxIt.next().shadowStatus;
+						if (auxIt.hasNext() && auxIt.next().shadowStatus != status) {
+							checkBoxShadow.allowIndeterminateProperty();
+							checkBoxShadow.setIndeterminate(true);
+							break;
+						}
+					}
+
 					statusPane.updateStatus(label.toString());
 				} else if (startPoint != null && startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
 					checkBoxShadow.setSelected(false);
+					checkBoxShadow.setAllowIndeterminate(false);
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else {
 					checkBoxShadow.setSelected(false);
+					checkBoxShadow.setAllowIndeterminate(false);
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}
 				redrawCanvas();

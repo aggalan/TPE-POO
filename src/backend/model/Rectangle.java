@@ -30,6 +30,16 @@ public class Rectangle extends Figure {
         height = temp;
     }
 
+    @Override
+    protected void setHeight(double height) {
+        this.height = height;
+    }
+
+    @Override
+    protected void setWidth(double width) {
+        this.width = width;
+    }
+
 
 
     public double getHeight() {

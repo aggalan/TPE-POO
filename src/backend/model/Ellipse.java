@@ -11,6 +11,14 @@ public class Ellipse extends Figure {
         this.sMinorAxis = sMinorAxis;
     }
 
+    protected void setWidth(double width) {
+        this.sMayorAxis = width;
+    }
+
+    protected void setHeight(double height) {
+        this.sMinorAxis = height;
+    }
+
 
     public Point getCenterPoint() {
         return centerPoint;

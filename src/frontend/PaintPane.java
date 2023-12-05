@@ -287,6 +287,52 @@ public class PaintPane extends BorderPane {
 			}
 		});
 
+		turnRightButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				for (FrontFigure<? extends Figure> figure : selectedFigures) {
+					figure.getFigure().rotate();
+				}
+				redrawCanvas();
+			}
+
+		});
+
+		flipVerticalButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				for (FrontFigure<? extends Figure> figure : selectedFigures) {
+					figure.getFigure().flipVertically();
+				}
+				redrawCanvas();
+			}
+		});
+
+		flipHorizontalButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				for (FrontFigure<? extends Figure> figure : selectedFigures) {
+					figure.getFigure().flipHorizontally();
+				}
+				redrawCanvas();
+			}
+		});
+
+		scaleButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				for (FrontFigure<? extends Figure> figure : selectedFigures) {
+					figure.getFigure().scale();
+				}
+				redrawCanvas();
+			}
+		});
+
+		descaleButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				for (FrontFigure<? extends Figure> figure : selectedFigures) {
+					figure.getFigure().deScale();
+				}
+				redrawCanvas();
+			}
+		});
+
 		setLeft(buttonsBox);
 		setRight(canvas);
 	}

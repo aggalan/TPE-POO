@@ -16,10 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.RadialGradient;
-
 
 
 import java.util.*;
@@ -51,9 +47,9 @@ public class PaintPane extends BorderPane {
 	private Button flipVerticalButton = new Button("Voltear V");
 	private Button scaleButton = new Button("Escalar +");
 	private Button descaleButton = new Button("Escalar -");
-	private final CheckBox checkBox1 = new CheckBox("Sombra");
-	private final CheckBox checkBox2 = new CheckBox("Gradiente");
-	private final CheckBox checkBox3 = new CheckBox("Biselado");
+	private final CheckBox checkBoxShadow = new CheckBox("Sombra");
+	private final CheckBox checkBoxGradient = new CheckBox("Gradiente");
+	private final CheckBox checkBoxBiselado = new CheckBox("Biselado");
 
 	// Selector de color de relleno
 	private ColorPicker fillColorPicker = new ColorPicker(defaultFillColor);
@@ -109,8 +105,8 @@ public class PaintPane extends BorderPane {
 
 		HBox effect = new HBox(10);
 		Label label1 = new Label("Efectos:");
-		CheckBox[] effects = {checkBox1, checkBox2, checkBox3};
-		effect.getChildren().addAll(label1, checkBox1, checkBox2, checkBox3);
+		CheckBox[] effects = {checkBoxShadow, checkBoxGradient, checkBoxBiselado};
+		effect.getChildren().addAll(label1, checkBoxShadow, checkBoxGradient, checkBoxBiselado);
 		for(CheckBox checkbox : effects){
 			checkbox.setMinWidth(10);
 			checkbox.setCursor(Cursor.HAND);
@@ -213,14 +209,14 @@ public class PaintPane extends BorderPane {
 					}
 				}
 				if (found) {
-					checkBox1.setSelected(selectedFigures.isEmpty() || selectedFigures.iterator().next().shadowStatus);
+					checkBoxShadow.setSelected(selectedFigures.isEmpty() || selectedFigures.iterator().next().shadowStatus);
 					statusPane.updateStatus(label.toString());
 				} else if (startPoint != null && startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
-					checkBox1.setSelected(false);
+					checkBoxShadow.setSelected(false);
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else {
-					checkBox1.setSelected(false);
+					checkBoxShadow.setSelected(false);
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}
 				redrawCanvas();
@@ -246,8 +242,8 @@ public class PaintPane extends BorderPane {
 
 		deleteButton.setOnAction(event -> deleteButtonAction());
 
-		checkBox1.setOnAction(event -> selectedFigures.forEach(figure -> {
-			if(checkBox1.isSelected()) {
+		checkBoxShadow.setOnAction(event -> selectedFigures.forEach(figure -> {
+			if(checkBoxShadow.isSelected()) {
 				figure.applyShadow();
 			}
 			else{

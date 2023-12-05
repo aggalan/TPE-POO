@@ -9,6 +9,9 @@ public abstract class FrontFigure<T extends Figure> {
     private GraphicsContext gc;
     private T figure;
     private final Color color;
+    private boolean shadowStatus = false;
+    private boolean gradientStatus = false;
+    private boolean beveldStatus false;
 
     public FrontFigure(GraphicsContext gc, T figure, Color color) {
         this.gc = gc;
@@ -16,8 +19,13 @@ public abstract class FrontFigure<T extends Figure> {
         this.color = color;
     }
 
+    public void applyShadow(){
+        shadowStatus = true;
+    }
 
-
+    public void removeShadow(){
+        shadowStatus = false;
+    }
 
     @Override
     public String toString() {

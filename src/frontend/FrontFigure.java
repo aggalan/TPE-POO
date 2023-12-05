@@ -30,6 +30,14 @@ public abstract class FrontFigure<T extends Figure> {
         shadowStatus = false;
     }
 
+      public void applyGradient(){
+        gradientStatus = true;
+    }
+
+    public void removeGradient(){
+        gradientStatus = false;
+    }
+
     @Override
     public String toString() {
         return figure.toString();

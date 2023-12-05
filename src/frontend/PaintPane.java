@@ -147,7 +147,7 @@ public class PaintPane extends BorderPane {
 		});
 
 		//sombra
-		checkBox1.setOnAction(event -> selectedFigures.foreach({
+		checkBox1.setOnAction(event -> selectedFigures.forEach(figure -> {
 				if(checkBox1.isSelected()) {
 					figure.applyShadow();
 				}
@@ -155,7 +155,7 @@ public class PaintPane extends BorderPane {
 					figure.removeShadow();
 				}
 				redrawCanvas();
-		});
+		}));
 
 
 		canvas.setOnMouseReleased(event -> {

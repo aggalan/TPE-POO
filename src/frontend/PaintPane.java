@@ -119,7 +119,13 @@ public class PaintPane extends BorderPane {
 
 		canvas.setOnMousePressed(event -> {
 			startPoint = new Point(event.getX(), event.getY());
+			for (FrontFigure<? extends Figure> figure : selectedFigures) { // this makes it so when multiple figures selected and you try to select more creating a new imaginary rectangle, it does that insted of moving the selected figures
+				if (figureBelongs(figure, new Point(event.getX(), event.getY()))) {
+					return;
+				}
+			}
 			selectedFigures.clear();
+
 		});
 
 

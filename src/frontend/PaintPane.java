@@ -145,7 +145,7 @@ public class PaintPane extends BorderPane {
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
 						selectedFigures.add(figure);
-						System.out.println(figure);
+						//System.out.println(figure);
 					}
 				}
 				startPoint = null;
@@ -233,7 +233,7 @@ public class PaintPane extends BorderPane {
 	}
 
 	private void redrawCanvas() {
-		System.out.println(selectedFigures.size() + "pito");
+		//System.out.println(selectedFigures.size() + "pito");
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(FrontFigure<? extends Figure> figure : canvasState) {
 			if(selectedFigures.contains(figure)){

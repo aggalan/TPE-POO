@@ -45,7 +45,7 @@ public class Ellipse extends Figure {
 
     @Override
     public boolean belongsInRectangle(Rectangle imaginaryRectangle) {
-        return false;
+        return getCenterPointX() + (getsMayorAxis()/2) <= imaginaryRectangle.getBottomRightX() && getCenterPointX() - (getsMayorAxis()/2) >= imaginaryRectangle.getTopLeftX() && getCenterPointY() + (getsMinorAxis()/2) <= imaginaryRectangle.getBottomRightY() && getCenterPointY() - (getsMinorAxis()/2) >= imaginaryRectangle.getTopLeftY();
     }
 
     @Override

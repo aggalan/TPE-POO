@@ -197,7 +197,7 @@ public class PaintPane extends BorderPane {
 				}
 				if (found) {
 					statusPane.updateStatus(label.toString());
-				} else if (startPoint.equals(eventPoint)) {
+				} else if (startPoint != null && startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else {

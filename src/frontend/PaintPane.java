@@ -218,7 +218,7 @@ public class PaintPane extends BorderPane {
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 
-					if(figureBelongs(figure, eventPoint) && !groupFound) {
+					if(figureBelongs(figure, eventPoint)) {
 						for (ShapeGroup group : shapeGroups) {
 							if (group.contains(figure)) {
 								selectedFigures.clear();

@@ -11,7 +11,7 @@ public class Circle extends Ellipse {
 
 
     public double getRadius() {
-        return getsMayorAxis()/2;
+        return getWidth()/2;
     }
 
     public boolean belongs(Point eventPoint){

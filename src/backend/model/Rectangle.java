@@ -17,6 +17,16 @@ public class Rectangle extends Figure {
 
     }
 
+    @Override
+    protected void setHeight(double height) {
+        this.height = height;
+    }
+
+    @Override
+    protected void setWidth(double width) {
+        this.width = width;
+    }
+
     private Point getCenterPoint(){
         return new Point((bottomRight.getX() + topLeft.getX())/2, (topLeft.getY() + bottomRight.getY())/2);
     }
@@ -30,14 +40,12 @@ public class Rectangle extends Figure {
         height = temp;
     }
 
-    @Override
-    protected void setHeight(double height) {
-        this.height = height;
-    }
-
-    @Override
-    protected void setWidth(double width) {
-        this.width = width;
+    public void changeSize(double ratio){
+        Point centerPoint = getCenterPoint();
+        setWidth(width * ratio);
+        setHeight(height * ratio);
+        topLeft = new Point(centerPoint.getX() - width/2, centerPoint.getY() - height/2);
+        bottomRight = new Point(centerPoint.getX() + width/2, centerPoint.getY() + height/2);
     }
 
 

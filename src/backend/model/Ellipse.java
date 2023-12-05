@@ -19,7 +19,6 @@ public class Ellipse extends Figure {
         this.sMinorAxis = height;
     }
 
-
     public Point getCenterPoint() {
         return centerPoint;
     }
@@ -30,6 +29,13 @@ public class Ellipse extends Figure {
         sMayorAxis = sMinorAxis;
         sMinorAxis = tempAxis;
     }
+
+    @Override
+    public void changeSize(double ratio) {
+        setWidth(sMayorAxis * ratio);
+        setHeight(sMinorAxis * ratio);
+    }
+
 
     @Override
     public String toString() {

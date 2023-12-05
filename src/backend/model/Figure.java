@@ -1,6 +1,7 @@
 package backend.model;
 
 public abstract class Figure {
+    protected static double RATIO = 0.25;
 
     public abstract boolean belongs(Point eventPoint);
     public abstract boolean belongsInRectangle(Rectangle imaginaryRectangle);
@@ -10,6 +11,13 @@ public abstract class Figure {
     public abstract double getWidth();
     protected abstract void setWidth(double newWidth);
     protected abstract void setHeight(double newHeight);
+    public abstract void changeSize(double ratio);
+    public void scale(){
+        changeSize(1+RATIO);
+    }
+    public void descale(){
+        changeSize(1-RATIO);
+    }
     public void flipVertically(){
         move(0, getHeight());
     }
@@ -17,14 +25,6 @@ public abstract class Figure {
         move(getWidth(), 0);
     }
 
-    public void scale(){
-        setWidth(getWidth() * 1.25);
-        setHeight(getHeight() * 1.25);
-    }
-    public void deScale(){
-        setWidth(getWidth() * 0.75);
-        setHeight(getHeight() * 0.75);
-    }
 
 
 

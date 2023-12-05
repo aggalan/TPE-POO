@@ -268,18 +268,15 @@ public class PaintPane extends BorderPane {
 
 
 			if (!selectedFigures.isEmpty()) {
-				Iterator<ShapeGroup> auxIt = shapeGroups.iterator(); //evito concurrent modification exception asi
-				while (auxIt.hasNext()) {
-//					ShapeGroup auxGroup = auxIt.next();
-//					for (FrontFigure<? extends Figure> figure : selectedFigures) {   //ver esta posibilidad mejor??
-//						if (auxGroup.contains(figure)) {
-//							auxIt.remove();
-//						}
-//					}
-					if (selectedFigures.containsAll(auxIt.next())) { //muy poco eficiente, pero anda. ver q onda
-						auxIt.remove();
-					}
-				}
+				//evito concurrent modification exception asi
+				//					ShapeGroup auxGroup = auxIt.next();
+				//					for (FrontFigure<? extends Figure> figure : selectedFigures) {   //ver esta posibilidad mejor??
+				//						if (auxGroup.contains(figure)) {
+				//							auxIt.remove();
+				//						}
+				//					}
+				//muy poco eficiente, pero anda. ver q onda
+				shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
 				canvasState.removeAll(selectedFigures);
 				selectedFigures.clear();
 				//selectedFigure = null;

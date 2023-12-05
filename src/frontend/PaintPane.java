@@ -13,10 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public class PaintPane extends BorderPane {
@@ -57,7 +54,9 @@ public class PaintPane extends BorderPane {
 
 	// Seleccionar una figura
 	//private FrontFigure<? extends Figure> selectedFigure;
-	List<FrontFigure<? extends Figure>> selectedFigures = new ArrayList<>();
+	private List<FrontFigure<? extends Figure>> selectedFigures = new ArrayList<>();
+
+	private List<ShapeGroup> shapeGroups = new ArrayList<>();
 
 	// StatusBar
 	private StatusPane statusPane;
@@ -118,8 +117,31 @@ public class PaintPane extends BorderPane {
 		});
 
 		groupButton.setOnAction(event -> {
-
+			if (selectedFigures.size() <= 1) {
+				return;
+            }
+			ShapeGroup aux = new ShapeGroup();
+			aux.addAll(selectedFigures);
+			shapeGroups.add(aux);
+			selectedFigures.clear();
+			redrawCanvas();
 		});
+
+
+		ungroupButton.setOnAction(event -> {
+			if (selectedFigures.isEmpty() || shapeGroups.isEmpty()) {
+				return;
+			}
+			Iterator<ShapeGroup> auxIt = shapeGroups.iterator();
+			while (auxIt.hasNext()) {
+				if (selectedFigures.containsAll(auxIt.next())) { //muy poco eficiente, pero anda. ver q onda
+					auxIt.remove();
+				}
+			}
+			selectedFigures.clear();
+			redrawCanvas();
+		});
+
 
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
@@ -148,10 +170,17 @@ public class PaintPane extends BorderPane {
 //				canvasState.addFigure(newFigure);
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
+						for (ShapeGroup group : shapeGroups) {
+							if (group.contains(figure)) {
+								selectedFigures.addAll(group); // ver posibilidad de que sea set selectedFigures?
+								selectedFigures.remove(figure); //boca boca boca pero paja arreglenlo si quieren ni se si necesario
+							}
+						}
 						selectedFigures.add(figure);
 						//System.out.println(figure);
 					}
 				}
+
 				startPoint = null;
 				redrawCanvas();
 				return;
@@ -185,17 +214,29 @@ public class PaintPane extends BorderPane {
 			if(selectionButton.isSelected()) {
 				Point eventPoint = new Point(event.getX(), event.getY());
 				boolean found = false;
+				boolean groupFound = false;
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
 				for (FrontFigure<? extends Figure> figure : canvasState) {
-					if(figureBelongs(figure, eventPoint)) {
+
+					if(figureBelongs(figure, eventPoint) && !groupFound) {
+						for (ShapeGroup group : shapeGroups) {
+							if (group.contains(figure)) {
+								selectedFigures.clear();
+								selectedFigures.addAll(group);
+								groupFound = true;
+								break;
+							}
+						}
+						if (!groupFound) {
+							selectedFigures.clear(); //esto hace que no se seleccionen 2 si hay una arriba de la otra
+							selectedFigures.add(figure);
+							//selectedFigure = figure;
+							label.append(figure.toString());
+						}
 						found = true;
-						selectedFigures.clear(); //esto hace que no se seleccionen 2 si hay una arriba de la otra
-						selectedFigures.add(figure);
-						//selectedFigure = figure;
-						label.append(figure.toString());
 					}
 				}
-				if (found) {
+				if (found) {  //habria que adaptar lo de label pero paja
 					statusPane.updateStatus(label.toString());
 				} else if (startPoint != null && startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
@@ -224,7 +265,21 @@ public class PaintPane extends BorderPane {
 		});
 
 		deleteButton.setOnAction(event -> {
+
+
 			if (!selectedFigures.isEmpty()) {
+				Iterator<ShapeGroup> auxIt = shapeGroups.iterator(); //evito concurrent modification exception asi
+				while (auxIt.hasNext()) {
+//					ShapeGroup auxGroup = auxIt.next();
+//					for (FrontFigure<? extends Figure> figure : selectedFigures) {   //ver esta posibilidad mejor??
+//						if (auxGroup.contains(figure)) {
+//							auxIt.remove();
+//						}
+//					}
+					if (selectedFigures.containsAll(auxIt.next())) { //muy poco eficiente, pero anda. ver q onda
+						auxIt.remove();
+					}
+				}
 				canvasState.removeAll(selectedFigures);
 				selectedFigures.clear();
 				//selectedFigure = null;

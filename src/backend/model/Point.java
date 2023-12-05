@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Point {
 
-    public double x, y;
+    private double x, y;
 
     public Point(double x, double y) {
         this.x = x;

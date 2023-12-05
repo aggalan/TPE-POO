@@ -125,27 +125,7 @@ public class PaintPane extends BorderPane {
 			startPoint = new Point(event.getX(), event.getY());
 		});
 
-		groupButton.setOnAction(event -> {
-			if (selectedFigures.size() <= 1) {
-				return;
-            }
-			ShapeGroup aux = new ShapeGroup();
-			aux.addAll(selectedFigures);
-			shapeGroups.add(aux);
-			selectedFigures.clear();
-			redrawCanvas();
-		});
 
-
-		ungroupButton.setOnAction(event -> {
-			if (selectedFigures.isEmpty() || shapeGroups.isEmpty()) {
-				return;
-			}
-
-            shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
-			selectedFigures.clear();
-			redrawCanvas();
-		});
 
 		//sombra
 		checkBox1.setOnAction(event -> selectedFigures.forEach(figure -> {
@@ -275,25 +255,13 @@ public class PaintPane extends BorderPane {
 			}
 		});
 
-		deleteButton.setOnAction(event -> {
 
 
-			if (!selectedFigures.isEmpty()) {
-				//evito concurrent modification exception asi
-				//					ShapeGroup auxGroup = auxIt.next();
-				//					for (FrontFigure<? extends Figure> figure : selectedFigures) {   //ver esta posibilidad mejor??
-				//						if (auxGroup.contains(figure)) {
-				//							auxIt.remove();
-				//						}
-				//					}
-				//muy poco eficiente, pero anda. ver q onda
-				shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
-				canvasState.removeAll(selectedFigures);
-				selectedFigures.clear();
-				//selectedFigure = null;
-				redrawCanvas();
-			}
-		});
+		deleteButton.setOnAction(event -> deleteButtonAction());
+
+		groupButton.setOnAction(event -> groupButtonAction());
+
+		ungroupButton.setOnAction(event -> ungroupButtonAction());
 
 		turnRightButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().rotate());});
 
@@ -321,8 +289,6 @@ public class PaintPane extends BorderPane {
 				gc.setStroke(CanvasState.LINE_COLOR);
 			}
 			gc.setFill(figure.getColor());
-
-
 			if (figure.shadowStatus) {
 				figure.createShadow();
 			}
@@ -334,6 +300,36 @@ public class PaintPane extends BorderPane {
 
 	private boolean figureBelongs(FrontFigure<? extends Figure> figure, Point eventPoint) {
 		return figure.getFigure().belongs(eventPoint);
+	}
+
+	private void deleteButtonAction(){
+		if (!selectedFigures.isEmpty()) {
+			shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
+			canvasState.removeAll(selectedFigures);
+			selectedFigures.clear();
+			redrawCanvas();
+		}
+	}
+
+	private void groupButtonAction(){
+		if (selectedFigures.size() <= 1) {
+			return;
+		}
+		ShapeGroup aux = new ShapeGroup();
+		aux.addAll(selectedFigures);
+		shapeGroups.add(aux);
+		selectedFigures.clear();
+		redrawCanvas();
+	}
+
+	private void ungroupButtonAction(){
+		if (selectedFigures.isEmpty() || shapeGroups.isEmpty()) {
+			return;
+		}
+		//despues ver como hacer mas eficiente
+		shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
+		selectedFigures.clear();
+		redrawCanvas();
 	}
 		
 }

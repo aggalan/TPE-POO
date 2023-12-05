@@ -147,18 +147,14 @@ public class PaintPane extends BorderPane {
 		});
 
 		//sombra
-		checkBox1.setOnAction(event -> {
-		if(!selectedFigures.isEmpty()){
-			for (FrontFigure<? extends Figure> figure : selectedFigures) {
+		checkBox1.setOnAction(event -> selectedFigures.foreach({
 				if(checkBox1.isSelected()) {
-					applyShadow(figure);
+					figure.applyShadow();
 				}
 				else{
-					removeShadow(figure);
+					figure.removeShadow();
 				}
-			}
-			redrawCanvas();
-		}
+				redrawCanvas();
 		});
 
 

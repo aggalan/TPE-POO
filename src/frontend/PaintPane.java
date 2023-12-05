@@ -93,7 +93,7 @@ public class PaintPane extends BorderPane {
 			put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc,fillColorPicker.getValue()));
 			put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, fillColorPicker.getValue()));
 		}};
-		
+
 		VBox buttonsBox = new VBox(10);
 		buttonsBox.getChildren().addAll(toolsArr);
 		buttonsBox.getChildren().addAll(functionalities);
@@ -139,7 +139,7 @@ public class PaintPane extends BorderPane {
 					// redraw canvas?
 				}
 			}
-			
+
 			if(selectionButton.isSelected() && !startPoint.equals(endPoint)) {
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
@@ -164,7 +164,6 @@ public class PaintPane extends BorderPane {
 						break;
 					}
 				}
-
 				redrawCanvas();
 				return;
 			}
@@ -269,6 +268,16 @@ public class PaintPane extends BorderPane {
 
 		deleteButton.setOnAction(event -> deleteButtonAction());
 
+		checkBoxBiselado.setOnAction(event -> selectedFigures.forEach(figure ->{
+			if(checkBoxBiselado.isSelected()){
+				figure.applyBeveled();
+			}
+			else{
+				figure.removeBeveled();
+			}
+
+		}));
+
 		checkBoxShadow.setOnAction(event -> selectedFigures.forEach(figure -> {
 			if(checkBoxShadow.isSelected()) {
 				figure.applyShadow();
@@ -276,7 +285,6 @@ public class PaintPane extends BorderPane {
 			else{
 				figure.removeShadow();
 			}
-			redrawCanvas();
 		}));
 
 		checkBoxGradient.setOnAction(event -> selectedFigures.forEach(figure -> {
@@ -286,7 +294,6 @@ public class PaintPane extends BorderPane {
 			else{
 				figure.removeGradient();
 			}
-			redrawCanvas();
 		}));
 
 		groupButton.setOnAction(event -> groupButtonAction());
@@ -304,6 +311,7 @@ public class PaintPane extends BorderPane {
 		descaleButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().descale());});
 
 		buttonsBox.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
+		effect.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
 
 		setLeft(buttonsBox);
 		setRight(canvas);
@@ -333,7 +341,7 @@ public class PaintPane extends BorderPane {
 
 	private void deleteButtonAction(){
 		if (!selectedFigures.isEmpty()) {
-			shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
+			shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 			canvasState.removeAll(selectedFigures);
 			selectedFigures.clear();
 			redrawCanvas();
@@ -355,8 +363,7 @@ public class PaintPane extends BorderPane {
 		if (selectedFigures.isEmpty() || shapeGroups.isEmpty()) {
 			return;
 		}
-		//despues ver como hacer mas eficiente
-		shapeGroups.removeIf(frontFigures -> selectedFigures.containsAll(frontFigures));
+		shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 		selectedFigures.clear();
 		redrawCanvas();
 	}

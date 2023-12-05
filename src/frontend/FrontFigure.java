@@ -11,8 +11,8 @@ public abstract class FrontFigure<T extends Figure> {
     private T figure;
     private final Color color;
     protected boolean shadowStatus = false;
-    private boolean gradientStatus = false;
-    private boolean beveldStatus = false;
+    protected boolean gradientStatus = false;
+    protected boolean beveledStatus = false;
 
     protected boolean isShadow = false;
 
@@ -30,12 +30,19 @@ public abstract class FrontFigure<T extends Figure> {
         shadowStatus = false;
     }
 
-      public void applyGradient(){
+    public void applyGradient(){
         gradientStatus = true;
     }
 
     public void removeGradient(){
         gradientStatus = false;
+    }
+
+    public void applyBeveled(){
+        beveledStatus = true;
+    }
+    public void removeBeveled(){
+        beveledStatus = false;
     }
 
     @Override

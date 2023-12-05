@@ -62,7 +62,7 @@ public class PaintPane extends BorderPane {
 
 	// Seleccionar una figura
 	//private FrontFigure<? extends Figure> selectedFigure;
-	private List<FrontFigure<? extends Figure>> selectedFigures = new ArrayList<>();
+	private Set<FrontFigure<? extends Figure>> selectedFigures = new HashSet<>(); //asi no se puede agregar el mismo puntero dos veces, sirve para seleccion multiple comboinado con group
 
 	private List<ShapeGroup> shapeGroups = new ArrayList<>();
 
@@ -176,6 +176,9 @@ public class PaintPane extends BorderPane {
 				newFigureAux = new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, CanvasState.DEFAULT_FILL_COLOR);
 //				figureColorMap.put(newFigure, Color.color(0,0,0,0));
 //				canvasState.addFigure(newFigure);
+
+				boolean addedGroup = false;
+
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
 						for (ShapeGroup group : shapeGroups) {
@@ -188,7 +191,6 @@ public class PaintPane extends BorderPane {
 						//System.out.println(figure);
 					}
 				}
-
 				startPoint = null;
 				redrawCanvas();
 				return;

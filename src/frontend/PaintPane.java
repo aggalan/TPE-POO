@@ -126,19 +126,6 @@ public class PaintPane extends BorderPane {
 		});
 
 
-
-		//sombra
-		checkBox1.setOnAction(event -> selectedFigures.forEach(figure -> {
-				if(checkBox1.isSelected()) {
-					figure.applyShadow();
-				}
-				else{
-					figure.removeShadow();
-				}
-				redrawCanvas();
-		}));
-
-
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
 			if(startPoint == null || endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
@@ -225,13 +212,15 @@ public class PaintPane extends BorderPane {
 						found = true;
 					}
 				}
-				if (found) {  //habria que adaptar lo de label pero paja
+				if (found) {
+					checkBox1.setSelected(selectedFigures.isEmpty() || selectedFigures.iterator().next().shadowStatus);
 					statusPane.updateStatus(label.toString());
 				} else if (startPoint != null && startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
+					checkBox1.setSelected(false);
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else {
-					//selectedFigure = null;
+					checkBox1.setSelected(false);
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}
 				redrawCanvas();
@@ -256,6 +245,16 @@ public class PaintPane extends BorderPane {
 
 
 		deleteButton.setOnAction(event -> deleteButtonAction());
+
+		checkBox1.setOnAction(event -> selectedFigures.forEach(figure -> {
+			if(checkBox1.isSelected()) {
+				figure.applyShadow();
+			}
+			else{
+				figure.removeShadow();
+			}
+			redrawCanvas();
+		}));
 
 		groupButton.setOnAction(event -> groupButtonAction());
 
@@ -328,5 +327,5 @@ public class PaintPane extends BorderPane {
 		selectedFigures.clear();
 		redrawCanvas();
 	}
-		
+
 }

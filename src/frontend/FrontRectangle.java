@@ -32,7 +32,7 @@ public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
             double x = rectangle.getTopLeft().getX();
             double y = rectangle.getTopLeft().getY();
             getGc().setLineWidth(5);
-            double bevelOffset = 4;
+            double bevelOffset = 3;
             getGc().setStroke(Color.LIGHTGRAY);
             getGc().strokeLine(x - bevelOffset, y - bevelOffset, x + rectangle.getWidth() + bevelOffset, y - bevelOffset);
             getGc().strokeLine(x - bevelOffset, y - bevelOffset, x - bevelOffset, y + rectangle.getHeight() + bevelOffset);

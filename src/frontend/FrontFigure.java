@@ -15,6 +15,17 @@ public abstract class FrontFigure<T extends Figure> {
     protected boolean beveledStatus = false;
     protected boolean isShadow = false;
 
+    public boolean getShadowStatus() {
+        return shadowStatus;
+    }
+
+    public boolean getGradientStatus() {
+        return gradientStatus;
+    }
+
+    public boolean getBeveledStatus() {
+        return beveledStatus;
+    }
 
     public FrontFigure(GraphicsContext gc, T figure, Color color) {
         this.gc = gc;
@@ -22,28 +33,20 @@ public abstract class FrontFigure<T extends Figure> {
         this.color = color;
     }
 
-    public void applyShadow(){
-        shadowStatus = true;
+    public void shadowStatus(boolean status){
+        shadowStatus = status;
     }
 
-    public void removeShadow(){
-        shadowStatus = false;
+    public void gradientStatus(boolean status){
+        gradientStatus = status;
     }
 
-    public void applyGradient(){
-        gradientStatus = true;
+
+    public void beveledStatus(boolean status){
+        beveledStatus = status;
     }
 
-    public void removeGradient(){
-        gradientStatus = false;
-    }
 
-    public void applyBeveled(){
-        beveledStatus = true;
-    }
-    public void removeBeveled(){
-        beveledStatus = false;
-    }
 
     @Override
     public String toString() {

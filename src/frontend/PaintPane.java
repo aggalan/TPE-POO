@@ -66,13 +66,15 @@ public class PaintPane extends BorderPane {
 	// StatusBar
 	private StatusPane statusPane;
 
+	private CheckBoxState checkBoxState = new CheckBoxState();
+
 	// Colores de relleno de cada figura
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
 		this.canvasState = canvasState;
 		this.statusPane = statusPane;
 
-		Button[] functionalities = {groupButton , ungroupButton, turnRightButton, flipHorizontalButton, flipVerticalButton, scaleButton, descaleButton};
-		for(Button functionality : functionalities){
+		Button[] functionalities = {groupButton, ungroupButton, turnRightButton, flipHorizontalButton, flipVerticalButton, scaleButton, descaleButton};
+		for (Button functionality : functionalities) {
 			functionality.setMinWidth(90);
 			functionality.setCursor(Cursor.HAND);
 		}
@@ -87,10 +89,10 @@ public class PaintPane extends BorderPane {
 
 		ToggleButton[] figuresArr = {rectangleButton, circleButton, squareButton, ellipseButton};
 
-		Map<ToggleButton, BiFunction<Point, Point, FrontFigure<? extends Figure>>> buttonMap = new HashMap<>(){{
+		Map<ToggleButton, BiFunction<Point, Point, FrontFigure<? extends Figure>>> buttonMap = new HashMap<>() {{
 			put(figuresArr[0], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, fillColorPicker.getValue()));
 			put(figuresArr[1], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, fillColorPicker.getValue()));
-			put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc,fillColorPicker.getValue()));
+			put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, fillColorPicker.getValue()));
 			put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, fillColorPicker.getValue()));
 		}};
 
@@ -107,7 +109,7 @@ public class PaintPane extends BorderPane {
 		Label label1 = new Label("Efectos:");
 		CheckBox[] effects = {checkBoxShadow, checkBoxGradient, checkBoxBiselado};
 		effect.getChildren().addAll(label1, checkBoxShadow, checkBoxGradient, checkBoxBiselado);
-		for(CheckBox checkbox : effects){
+		for (CheckBox checkbox : effects) {
 			checkbox.setMinWidth(10);
 			checkbox.setCursor(Cursor.HAND);
 		}
@@ -131,23 +133,23 @@ public class PaintPane extends BorderPane {
 
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
-			if(startPoint == null || endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
-				return ;
+			if (startPoint == null || endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
+				return;
 			}
 			FrontFigure<? extends Figure> newFigureAux = null;
 
 			boolean found = false;
 
 			for (ToggleButton button : figuresArr) {
-				if(button.isSelected()){
+				if (button.isSelected()) {
 					found = true;
 					BiFunction<Point, Point, FrontFigure<? extends Figure>> figureFunction = buttonMap.get(button);
 					newFigureAux = figureFunction.apply(startPoint, endPoint);
-					// redraw canvas?
+
 				}
 			}
 
-			if(selectionButton.isSelected() && !startPoint.equals(endPoint)) {
+			if (selectionButton.isSelected() && !startPoint.equals(endPoint)) {
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
 						for (ShapeGroup group : shapeGroups) {
@@ -158,25 +160,15 @@ public class PaintPane extends BorderPane {
 						}
 						selectedFigures.add(figure);
 					}
+					checkBoxGradient.setSelected(figure.getGradientStatus());
+					checkBoxShadow.setSelected(figure.getShadowStatus());
+					checkBoxBiselado.setSelected(figure.getBeveledStatus());
 				}
 				startPoint = null;
-
-				checkBoxShadow.setSelected(selectedFigures.isEmpty() || (selectedFigures.iterator().next().shadowStatus && selectedFigures.size() == 1));
-				Iterator<FrontFigure<? extends Figure>> auxIt = selectedFigures.iterator();
-				while (auxIt.hasNext()) {
-					boolean status = auxIt.next().shadowStatus;
-					if (auxIt.hasNext() && auxIt.next().shadowStatus != status) {
-						checkBoxShadow.allowIndeterminateProperty();
-						checkBoxShadow.setIndeterminate(true);
-						break;
-					}
-				}
 				redrawCanvas();
 				return;
 			}
 			if (!found) {
-				checkBoxShadow.setAllowIndeterminate(false);
-				checkBoxShadow.setIndeterminate(false);
 				return;
 			}
 			canvasState.add(newFigureAux);
@@ -188,13 +180,13 @@ public class PaintPane extends BorderPane {
 			Point eventPoint = new Point(event.getX(), event.getY());
 			boolean found = false;
 			StringBuilder label = new StringBuilder();
-			for(FrontFigure<? extends Figure> figure : canvasState) {
-				if(figureBelongs(figure, eventPoint)) {
+			for (FrontFigure<? extends Figure> figure : canvasState) {
+				if (figureBelongs(figure, eventPoint)) {
 					found = true;
-					label.append(figure.toString());
+					label.append(figure);
 				}
 			}
-			if(found) {
+			if (found) {
 				statusPane.updateStatus(label.toString());
 			} else {
 				statusPane.updateStatus(eventPoint.toString());
@@ -202,14 +194,13 @@ public class PaintPane extends BorderPane {
 		});
 
 		canvas.setOnMouseClicked(event -> {
-			if(selectionButton.isSelected()) {
+			if (selectionButton.isSelected()) {
 				Point eventPoint = new Point(event.getX(), event.getY());
 				boolean found = false;
-				boolean groupFound = false;
+				boolean groupFound;
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
 				for (FrontFigure<? extends Figure> figure : canvasState) {
-
-					if(figureBelongs(figure, eventPoint)) {
+					if (figureBelongs(figure, eventPoint)) {
 						groupFound = false;
 						for (ShapeGroup group : shapeGroups) {
 							if (group.contains(figure)) {
@@ -221,43 +212,26 @@ public class PaintPane extends BorderPane {
 							}
 						}
 						if (!groupFound) {
-							selectedFigures.clear(); //esto hace que no se seleccionen 2 si hay una arriba de la otra
+							selectedFigures.clear();
 							selectedFigures.add(figure);
-							label.append(figure.toString());
+							label.append(figure);
 						}
 						found = true;
+						updateCheckBoxesState();
 					}
 				}
-				if (found) {
-					checkBoxShadow.setSelected(selectedFigures.isEmpty() || (selectedFigures.iterator().next().shadowStatus && selectedFigures.size() == 1));
-					Iterator<FrontFigure<? extends Figure>> auxIt = selectedFigures.iterator();
-
-					while (auxIt.hasNext()) {
-						boolean status = auxIt.next().shadowStatus;
-						if (auxIt.hasNext() && auxIt.next().shadowStatus != status) {
-							checkBoxShadow.allowIndeterminateProperty();
-							checkBoxShadow.setIndeterminate(true);
-							break;
-						}
-					}
-
-					statusPane.updateStatus(label.toString());
-				} else if (startPoint != null && startPoint.equals(eventPoint)) {
+				if (!found && startPoint != null && startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
-					checkBoxShadow.setSelected(false);
-					checkBoxShadow.setAllowIndeterminate(false);
+					updateCheckBoxesState();
 					statusPane.updateStatus("Ninguna figura encontrada");
-				}else {
-					checkBoxShadow.setSelected(false);
-					checkBoxShadow.setAllowIndeterminate(false);
-					statusPane.updateStatus("Ninguna figura encontrada");
-				}
+				}else statusPane.updateStatus(label.toString());
 				redrawCanvas();
 			}
 		});
 
+
 		canvas.setOnMouseDragged(event -> {
-			if(selectionButton.isSelected()) {
+			if (selectionButton.isSelected()) {
 				Point eventPoint = new Point(event.getX(), event.getY());
 				double diffX = (eventPoint.getX() - startPoint.getX());
 				double diffY = (eventPoint.getY() - startPoint.getY());
@@ -272,50 +246,43 @@ public class PaintPane extends BorderPane {
 		});
 
 
-
 		deleteButton.setOnAction(event -> deleteButtonAction());
 
-		checkBoxBiselado.setOnAction(event -> selectedFigures.forEach(figure ->{
-			if(checkBoxBiselado.isSelected()){
-				figure.applyBeveled();
-			}
-			else{
-				figure.removeBeveled();
-			}
-
+		checkBoxBiselado.setOnAction(event -> selectedFigures.forEach(figure -> {
+			figure.beveledStatus(checkBoxBiselado.isSelected());
 		}));
 
 		checkBoxShadow.setOnAction(event -> selectedFigures.forEach(figure -> {
-			if(checkBoxShadow.isSelected()) {
-				figure.applyShadow();
-			}
-			else{
-				figure.removeShadow();
-			}
+			figure.shadowStatus(checkBoxShadow.isSelected());
 		}));
 
 		checkBoxGradient.setOnAction(event -> selectedFigures.forEach(figure -> {
-			if(checkBoxGradient.isSelected()) {
-				figure.applyGradient();
-			}
-			else{
-				figure.removeGradient();
-			}
+			figure.gradientStatus(checkBoxGradient.isSelected());
 		}));
 
 		groupButton.setOnAction(event -> groupButtonAction());
 
 		ungroupButton.setOnAction(event -> ungroupButtonAction());
 
-		turnRightButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().rotate());});
+		turnRightButton.setOnAction(event -> {
+			selectedFigures.forEach(figure -> figure.getFigure().rotate());
+		});
 
-		flipVerticalButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().flipVertically());});
+		flipVerticalButton.setOnAction(event -> {
+			selectedFigures.forEach(figure -> figure.getFigure().flipVertically());
+		});
 
-		flipHorizontalButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().flipHorizontally());});
+		flipHorizontalButton.setOnAction(event -> {
+			selectedFigures.forEach(figure -> figure.getFigure().flipHorizontally());
+		});
 
-		scaleButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().scale());});
+		scaleButton.setOnAction(event -> {
+			selectedFigures.forEach(figure -> figure.getFigure().scale());
+		});
 
-		descaleButton.setOnAction(event -> {selectedFigures.forEach(figure -> figure.getFigure().descale());});
+		descaleButton.setOnAction(event -> {
+			selectedFigures.forEach(figure -> figure.getFigure().descale());
+		});
 
 		buttonsBox.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
 		effect.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
@@ -326,23 +293,17 @@ public class PaintPane extends BorderPane {
 
 	private void redrawCanvas() {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		for(FrontFigure<? extends Figure> figure : canvasState) {
-			if(selectedFigures.contains(figure) && !figure.isShadow){
+		for (FrontFigure<? extends Figure> figure : canvasState) {
+			if (selectedFigures != null && (selectedFigures.contains(figure))) {
 				gc.setStroke(Color.RED);
-			}else {
+			} else {
 				gc.setStroke(CanvasState.LINE_COLOR);
 			}
-			gc.setFill(figure.getColor());
 			if (figure.shadowStatus) {
 				figure.createShadow();
 			}
-			if(selectedFigures.contains(figure) && figure.beveledStatus){
-				gc.setStroke(Color.RED);
-				figure.drawBorder();
-			}
+			gc.setFill(figure.getColor());
 			figure.create(0);
-
-
 		}
 	}
 
@@ -350,7 +311,7 @@ public class PaintPane extends BorderPane {
 		return figure.getFigure().belongs(eventPoint);
 	}
 
-	private void deleteButtonAction(){
+	private void deleteButtonAction() {
 		if (!selectedFigures.isEmpty()) {
 			shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 			canvasState.removeAll(selectedFigures);
@@ -359,7 +320,7 @@ public class PaintPane extends BorderPane {
 		}
 	}
 
-	private void groupButtonAction(){
+	private void groupButtonAction() {
 		if (selectedFigures.size() <= 1) {
 			return;
 		}
@@ -370,13 +331,47 @@ public class PaintPane extends BorderPane {
 		redrawCanvas();
 	}
 
-	private void ungroupButtonAction(){
+	private void ungroupButtonAction() {
 		if (selectedFigures.isEmpty() || shapeGroups.isEmpty()) {
 			return;
 		}
 		shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 		selectedFigures.clear();
 		redrawCanvas();
+	}
+
+	private void updateCheckBoxesState() {
+		if (!selectedFigures.isEmpty()) {
+			checkBoxState.resetState();
+
+			for (FrontFigure<? extends Figure> figure : selectedFigures) {
+				checkBoxState.updateState(figure);
+			}
+
+			checkBoxShadow.setSelected(checkBoxState.getCommonShadowStatus());
+			checkBoxGradient.setSelected(checkBoxState.getCommonGradientStatus());
+			checkBoxBiselado.setSelected(checkBoxState.getCommonBeveledStatus());
+
+
+		} else {
+			resetCheckBoxes();
+		}
+	}
+
+	private void resetCheckBoxes() {
+		checkBoxShadow.setSelected(false);
+		checkBoxGradient.setSelected(false);
+		checkBoxBiselado.setSelected(false);
+		resetCheckBoxState(checkBoxShadow);
+		resetCheckBoxState(checkBoxGradient);
+		resetCheckBoxState(checkBoxBiselado);
+	}
+
+
+
+	private void resetCheckBoxState(CheckBox checkBox) {
+		checkBox.setIndeterminate(false);
+		checkBox.setAllowIndeterminate(false);
 	}
 
 }

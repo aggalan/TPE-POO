@@ -2,11 +2,10 @@ package frontend;
 
 import backend.model.Ellipse;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.*;
 import javafx.scene.shape.ArcType;
 
-public class FrontEllipse<T extends Ellipse> extends FrontFigure<T>{
+public class FrontEllipse<T extends Ellipse> extends FrontFigure<T> {
 
     public FrontEllipse(T ellipse, GraphicsContext gc, Color color) {
         super(gc, ellipse, color);
@@ -43,10 +42,14 @@ public class FrontEllipse<T extends Ellipse> extends FrontFigure<T>{
     @Override
     public void drawBorder() {
         Ellipse ellipse = getFigure();
-        getGc().setLineWidth(5);
-        super.getGc().strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getWidth() / 2), ellipse.getCenterPoint().getY() - (ellipse.getHeight() / 2), ellipse.getWidth(), ellipse.getHeight());
+        double centerX = ellipse.getCenterPoint().getX();
+        double centerY = ellipse.getCenterPoint().getY();
+        double width = ellipse.getWidth();
+        double height = ellipse.getHeight();
+
+        getGc().setLineWidth(3);
+        getGc().setStroke(Color.RED);
+        getGc().strokeOval(centerX - width / 2, centerY - height / 2, width, height);
         getGc().setLineWidth(1);
     }
-
 }
-

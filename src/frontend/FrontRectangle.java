@@ -14,21 +14,19 @@ public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
         super(gc, rectangle, color);
     }
 
-    public void create(double offset) {
+    public void create(double offset){
         Rectangle rectangle = super.getFigure();
-        if (gradientStatus && offset == 0) {
+        if (gradientStatus && offset == 0){
             LinearGradient linearGradient = new LinearGradient(0, 0, 1, 0, true,
                     CycleMethod.NO_CYCLE,
                     new Stop(0, getColor()),
                     new Stop(1, getColor().invert()));
             getGc().setFill(linearGradient);
         }
-        getGc().fillRect(rectangle.getTopLeftX() + offset, rectangle.getTopLeftY() + offset,
-                rectangle.getWidth(), rectangle.getHeight());
-        getGc().strokeRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(),
-                rectangle.getWidth(), rectangle.getHeight());
+        getGc().fillRect(rectangle.getTopLeftX() + offset, rectangle.getTopLeftY() + offset, rectangle.getWidth(), rectangle.getHeight());
+        getGc().strokeRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(), rectangle.getWidth(), rectangle.getHeight());
 
-        if (beveledStatus && offset == 0) {
+        if (beveledStatus && offset == 0){
             double x = rectangle.getTopLeft().getX();
             double y = rectangle.getTopLeft().getY();
             getGc().setLineWidth(5);
@@ -45,9 +43,13 @@ public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
 
     public void drawBorder(){
         Rectangle figure = getFigure();
+        double x = figure.getTopLeft().getX();
+        double y = figure.getTopLeft().getY();
+        double width = figure.getWidth();
+        double height = figure.getHeight();
         getGc().setLineWidth(3);
         getGc().setStroke(Color.RED);
-        getGc().strokeRect(figure.getTopLeft().getX(), figure.getTopLeft().getY(), figure.getWidth(), figure.getHeight());
+        getGc().strokeRect(x, y, width, height);
         getGc().setLineWidth(1);
     }
 

@@ -13,8 +13,8 @@ public abstract class FrontFigure<T extends Figure> {
     protected boolean shadowStatus = false;
     protected boolean gradientStatus = false;
     protected boolean beveledStatus = false;
-
     protected boolean isShadow = false;
+
 
     public FrontFigure(GraphicsContext gc, T figure, Color color) {
         this.gc = gc;
@@ -62,6 +62,7 @@ public abstract class FrontFigure<T extends Figure> {
         return gc;
     }
     public abstract void create(double offset);
+    public abstract void drawBorder();
 
     public void createShadow() {
         Paint aux = getGc().getFill();

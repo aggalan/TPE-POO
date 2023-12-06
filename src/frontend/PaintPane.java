@@ -336,6 +336,10 @@ public class PaintPane extends BorderPane {
 			if (figure.shadowStatus) {
 				figure.createShadow();
 			}
+			if(selectedFigures.contains(figure) && figure.beveledStatus){
+				gc.setStroke(Color.RED);
+				figure.drawBorder();
+			}
 			figure.create(0);
 
 

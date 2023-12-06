@@ -22,17 +22,29 @@ public class FrontEllipse<T extends Ellipse> extends FrontFigure<T>{
                     new Stop(1, getColor().invert()));
             getGc().setFill(radialGradient);
         }
+        getGc().setLineWidth(3);
         super.getGc().strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getWidth() / 2), ellipse.getCenterPoint().getY() - (ellipse.getHeight() / 2), ellipse.getWidth(), ellipse.getHeight());
         super.getGc().fillOval(ellipse.getCenterPoint().getX() - (ellipse.getWidth() / 2) + offset, ellipse.getCenterPoint().getY() - (ellipse.getHeight() / 2) + offset, ellipse.getWidth(), ellipse.getHeight());
-        if(beveledStatus && offset == 0){
+        if (beveledStatus && offset == 0) {
             double arcX = ellipse.getCenterPoint().getX() - ellipse.getWidth()/2;
             double arcY = ellipse.getCenterPoint().getY() - ellipse.getHeight()/2;
-            getGc().setLineWidth(10);
+            double bevelOffset = 4 ;
+            double beveledWidth = ellipse.getWidth() + 2 * bevelOffset;
+            double beveledHeight = ellipse.getHeight() + 2 * bevelOffset;
+            getGc().setLineWidth(5);
             getGc().setStroke(Color.LIGHTGRAY);
-            getGc().strokeArc(arcX, arcY, ellipse.getWidth(), ellipse.getHeight(), 45, 180, ArcType.OPEN);
+            getGc().strokeArc(arcX - bevelOffset, arcY - bevelOffset, beveledWidth, beveledHeight, 45, 180, ArcType.OPEN);
             getGc().setStroke(Color.BLACK);
-            getGc().strokeArc(arcX, arcY, ellipse.getWidth(), ellipse.getHeight(), 225, 180, ArcType.OPEN);
+            getGc().strokeArc(arcX - bevelOffset, arcY - bevelOffset, beveledWidth, beveledHeight, 225, 180, ArcType.OPEN);
         }
+        getGc().setLineWidth(1);
+    }
+
+    @Override
+    public void drawBorder() {
+        Ellipse ellipse = getFigure();
+        getGc().setLineWidth(5);
+        super.getGc().strokeOval(ellipse.getCenterPoint().getX() - (ellipse.getWidth() / 2), ellipse.getCenterPoint().getY() - (ellipse.getHeight() / 2), ellipse.getWidth(), ellipse.getHeight());
         getGc().setLineWidth(1);
     }
 

@@ -45,13 +45,9 @@ public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
 
     public void drawBorder(){
         Rectangle figure = getFigure();
-        double x = figure.getTopLeft().getX();
-        double y = figure.getTopLeft().getY();
-        double width = figure.getWidth();
-        double height = figure.getHeight();
         getGc().setLineWidth(3);
         getGc().setStroke(Color.RED);
-        getGc().strokeRect(x, y, width, height);
+        getGc().strokeRect(figure.getTopLeft().getX(), figure.getTopLeft().getY(), figure.getWidth(), figure.getHeight());
         getGc().setLineWidth(1);
     }
 

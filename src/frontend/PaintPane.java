@@ -24,29 +24,27 @@ import java.util.function.BiFunction;
 public class PaintPane extends BorderPane {
 
 	// BackEnd
-	private CanvasState canvasState;
+	private final CanvasState canvasState;
 
 	// Canvas y relacionados
-	private Canvas canvas = new Canvas(800, 600);
-	private GraphicsContext gc = canvas.getGraphicsContext2D();
+	private final Canvas canvas = new Canvas(800, 600);
+	private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-	private final Color lineColor = Color.BLACK;
 	private final Color defaultFillColor = Color.YELLOW;
 
 	// Botones Barra Izquierda
-	private ToggleButton selectionButton = new ToggleButton("Seleccionar");
-	private ToggleButton rectangleButton = new ToggleButton("Rectángulo");
-	private ToggleButton circleButton = new ToggleButton("Círculo");
-	private ToggleButton squareButton = new ToggleButton("Cuadrado");
-	private ToggleButton ellipseButton = new ToggleButton("Elipse");
-	private ToggleButton deleteButton = new ToggleButton("Borrar");
-	private Button groupButton = new Button("Agrupar");
-	private Button ungroupButton = new Button("Desagrupar");
-	private Button turnRightButton = new Button("Girar D");
-	private Button flipHorizontalButton = new Button("Voltear H");
-	private Button flipVerticalButton = new Button("Voltear V");
-	private Button scaleButton = new Button("Escalar +");
-	private Button descaleButton = new Button("Escalar -");
+	private final ToggleButton selectionButton = new ToggleButton("Seleccionar");
+	private final ToggleButton circleButton = new ToggleButton("Círculo");
+	private final ToggleButton squareButton = new ToggleButton("Cuadrado");
+	private final ToggleButton ellipseButton = new ToggleButton("Elipse");
+	private final ToggleButton deleteButton = new ToggleButton("Borrar");
+	private final Button groupButton = new Button("Agrupar");
+	private final Button ungroupButton = new Button("Desagrupar");
+	private final Button turnRightButton = new Button("Girar D");
+	private final Button flipHorizontalButton = new Button("Voltear H");
+	private final Button flipVerticalButton = new Button("Voltear V");
+	private final Button scaleButton = new Button("Escalar +");
+	private final Button descaleButton = new Button("Escalar -");
 	private final CheckBox checkBoxShadow = new CheckBox("Sombra");
 	private final CheckBox checkBoxGradient = new CheckBox("Gradiente");
 	private final CheckBox checkBoxBiselado = new CheckBox("Biselado");
@@ -64,9 +62,9 @@ public class PaintPane extends BorderPane {
 	private List<ShapeGroup> shapeGroups = new ArrayList<>();
 
 	// StatusBar
-	private StatusPane statusPane;
+	private final StatusPane statusPane;
 
-	private CheckBoxState checkBoxState = new CheckBoxState();
+	private final CheckBoxState checkBoxState = new CheckBoxState();
 
 	// Colores de relleno de cada figura
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
@@ -79,6 +77,7 @@ public class PaintPane extends BorderPane {
 			functionality.setCursor(Cursor.HAND);
 		}
 
+		ToggleButton rectangleButton = new ToggleButton("Rectángulo");
 		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, deleteButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
@@ -127,6 +126,7 @@ public class PaintPane extends BorderPane {
 				}
 			}
 			selectedFigures.clear();
+
 
 		});
 
@@ -248,41 +248,25 @@ public class PaintPane extends BorderPane {
 
 		deleteButton.setOnAction(event -> deleteButtonAction());
 
-		checkBoxBiselado.setOnAction(event -> selectedFigures.forEach(figure -> {
-			figure.beveledStatus(checkBoxBiselado.isSelected());
-		}));
+		checkBoxBiselado.setOnAction(event -> selectedFigures.forEach(figure -> figure.beveledStatus(checkBoxBiselado.isSelected())));
 
-		checkBoxShadow.setOnAction(event -> selectedFigures.forEach(figure -> {
-			figure.shadowStatus(checkBoxShadow.isSelected());
-		}));
+		checkBoxShadow.setOnAction(event -> selectedFigures.forEach(figure -> figure.shadowStatus(checkBoxShadow.isSelected())));
 
-		checkBoxGradient.setOnAction(event -> selectedFigures.forEach(figure -> {
-			figure.gradientStatus(checkBoxGradient.isSelected());
-		}));
+		checkBoxGradient.setOnAction(event -> selectedFigures.forEach(figure -> figure.gradientStatus(checkBoxGradient.isSelected())));
 
 		groupButton.setOnAction(event -> groupButtonAction());
 
 		ungroupButton.setOnAction(event -> ungroupButtonAction());
 
-		turnRightButton.setOnAction(event -> {
-			selectedFigures.forEach(figure -> figure.getFigure().rotate());
-		});
+		turnRightButton.setOnAction(event -> selectedFigures.forEach(figure -> figure.getFigure().rotate()));
 
-		flipVerticalButton.setOnAction(event -> {
-			selectedFigures.forEach(figure -> figure.getFigure().flipVertically());
-		});
+		flipVerticalButton.setOnAction(event -> selectedFigures.forEach(figure -> figure.getFigure().flipVertically()));
 
-		flipHorizontalButton.setOnAction(event -> {
-			selectedFigures.forEach(figure -> figure.getFigure().flipHorizontally());
-		});
+		flipHorizontalButton.setOnAction(event -> selectedFigures.forEach(figure -> figure.getFigure().flipHorizontally()));
 
-		scaleButton.setOnAction(event -> {
-			selectedFigures.forEach(figure -> figure.getFigure().scale());
-		});
+		scaleButton.setOnAction(event -> selectedFigures.forEach(figure -> figure.getFigure().scale()));
 
-		descaleButton.setOnAction(event -> {
-			selectedFigures.forEach(figure -> figure.getFigure().descale());
-		});
+		descaleButton.setOnAction(event -> selectedFigures.forEach(figure -> figure.getFigure().descale()));
 
 		buttonsBox.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
 		effect.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());

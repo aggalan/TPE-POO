@@ -31,7 +31,9 @@ public class PaintPane extends BorderPane {
 	private final Canvas canvas = new Canvas(800, 600);
 	private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-	private final Color defaultFillColor = Color.YELLOW;
+	private final Color DEFAULT_FILL_COLOR = Color.YELLOW;
+	public static final Color LINE_COLOR = Color.BLACK;
+
 
 	// Botones Barra Izquierda
 	private final ToggleButton selectionButton = new ToggleButton("Seleccionar");
@@ -56,8 +58,6 @@ public class PaintPane extends BorderPane {
 	// Dibujar una figura
 	private Point startPoint;
 
-	// Seleccionar una figura
-	//private FrontFigure<? extends Figure> selectedFigure;
 	private Set<FrontFigure<? extends Figure>> selectedFigures = new HashSet<>(); //asi no se puede agregar el mismo puntero dos veces, sirve para seleccion multiple comboinado con group
 
 	private List<ShapeGroup> shapeGroups = new ArrayList<>();
@@ -155,8 +155,8 @@ public class PaintPane extends BorderPane {
 					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
 						for (ShapeGroup group : shapeGroups) {
 							if (group.contains(figure)) {
-								selectedFigures.addAll(group); // ver posibilidad de que sea set selectedFigures?
-								selectedFigures.remove(figure); //boca boca boca pero paja arreglenlo si quieren ni se si necesario
+								selectedFigures.addAll(group);
+								selectedFigures.remove(figure);  //check if there is another way to work around this
 							}
 						}
 						selectedFigures.add(figure);

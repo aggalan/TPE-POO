@@ -20,6 +20,7 @@ import javafx.scene.control.ColorPicker;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public class PaintPane extends BorderPane {
 
@@ -37,7 +38,7 @@ public class PaintPane extends BorderPane {
 	private final ToggleButton circleButton = new ToggleButton("Círculo");
 	private final ToggleButton squareButton = new ToggleButton("Cuadrado");
 	private final ToggleButton ellipseButton = new ToggleButton("Elipse");
-	private final ToggleButton deleteButton = new ToggleButton("Borrar");
+	private final Button deleteButton = new Button("Borrar");
 	private final Button groupButton = new Button("Agrupar");
 	private final Button ungroupButton = new Button("Desagrupar");
 	private final Button turnRightButton = new Button("Girar D");
@@ -47,7 +48,7 @@ public class PaintPane extends BorderPane {
 	private final Button descaleButton = new Button("Escalar -");
 	private final CheckBox checkBoxShadow = new CheckBox("Sombra");
 	private final CheckBox checkBoxGradient = new CheckBox("Gradiente");
-	private final CheckBox checkBoxBeveled = new CheckBox("Biselado");
+	private final CheckBox checkBoxBiselado = new CheckBox("Biselado");
 
 	// Selector de color de relleno
 	private ColorPicker fillColorPicker = new ColorPicker(defaultFillColor);
@@ -71,14 +72,14 @@ public class PaintPane extends BorderPane {
 		this.canvasState = canvasState;
 		this.statusPane = statusPane;
 
-		Button[] functionalities = {groupButton, ungroupButton, turnRightButton, flipHorizontalButton, flipVerticalButton, scaleButton, descaleButton};
+		Button[] functionalities = {deleteButton, groupButton, ungroupButton, turnRightButton, flipHorizontalButton, flipVerticalButton, scaleButton, descaleButton};
 		for (Button functionality : functionalities) {
 			functionality.setMinWidth(90);
 			functionality.setCursor(Cursor.HAND);
 		}
 
 		ToggleButton rectangleButton = new ToggleButton("Rectángulo");
-		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, deleteButton};
+		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
 			tool.setMinWidth(90);
@@ -106,8 +107,8 @@ public class PaintPane extends BorderPane {
 
 		HBox effect = new HBox(10);
 		Label label1 = new Label("Efectos:");
-		CheckBox[] effects = {checkBoxShadow, checkBoxGradient, checkBoxBeveled};
-		effect.getChildren().addAll(label1, checkBoxShadow, checkBoxGradient, checkBoxBeveled);
+		CheckBox[] effects = {checkBoxShadow, checkBoxGradient, checkBoxBiselado};
+		effect.getChildren().addAll(label1, checkBoxShadow, checkBoxGradient, checkBoxBiselado);
 		for (CheckBox checkbox : effects) {
 			checkbox.setMinWidth(10);
 			checkbox.setCursor(Cursor.HAND);
@@ -170,7 +171,7 @@ public class PaintPane extends BorderPane {
 			}
 			canvasState.add(newFigureAux);
 			startPoint = null;
-			updateCheckBoxesState();
+//			updateCheckBoxesState();
 			redrawCanvas();
 		});
 
@@ -222,7 +223,7 @@ public class PaintPane extends BorderPane {
 
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else statusPane.updateStatus(label.toString());
-				updateCheckBoxesState();
+//				updateCheckBoxesState();
 				redrawCanvas();
 			}
 		});
@@ -246,7 +247,7 @@ public class PaintPane extends BorderPane {
 
 		deleteButton.setOnAction(event -> deleteButtonAction());
 
-		checkBoxBeveled.setOnAction(event -> selectedFigures.forEach(figure -> figure.beveledStatus(checkBoxBeveled.isSelected())));
+		checkBoxBiselado.setOnAction(event -> selectedFigures.forEach(figure -> figure.beveledStatus(checkBoxBiselado.isSelected())));
 
 		checkBoxShadow.setOnAction(event -> selectedFigures.forEach(figure -> figure.shadowStatus(checkBoxShadow.isSelected())));
 
@@ -286,6 +287,7 @@ public class PaintPane extends BorderPane {
 			}
 			gc.setFill(figure.getColor());
 			figure.create(0);
+			updateCheckBoxesState();
 		}
 	}
 
@@ -298,7 +300,8 @@ public class PaintPane extends BorderPane {
 			shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 			canvasState.removeAll(selectedFigures);
 			selectedFigures.clear();
-			redrawCanvas();
+//			updateCheckBoxesState();
+//			redrawCanvas();
 		}
 	}
 
@@ -310,7 +313,7 @@ public class PaintPane extends BorderPane {
 		aux.addAll(selectedFigures);
 		shapeGroups.add(aux);
 		selectedFigures.clear();
-		redrawCanvas();
+//		redrawCanvas();
 	}
 
 	private void ungroupButtonAction() {
@@ -319,7 +322,7 @@ public class PaintPane extends BorderPane {
 		}
 		shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 		selectedFigures.clear();
-		redrawCanvas();
+//		redrawCanvas();
 	}
 
 	private void updateCheckBoxesState() {
@@ -331,9 +334,6 @@ public class PaintPane extends BorderPane {
 			boolean auxGradientStatus = selectedFigures.iterator().next().gradientStatus;
 			boolean auxBeveledStatus = selectedFigures.iterator().next().beveledStatus;
 
-			boolean auxCurrentShadowStatus;
-			boolean auxCurrentGradientStatus;
-			boolean auxCurrentBeveledStatus;
 
 			for (FrontFigure<? extends Figure> figure : selectedFigures) {
 				if (figure.getShadowStatus() != auxShadowStatus) {
@@ -348,8 +348,8 @@ public class PaintPane extends BorderPane {
 				}
 				if (figure.getBeveledStatus() != auxBeveledStatus) {
 					mixed = true;
-					checkBoxBeveled.allowIndeterminateProperty();
-					checkBoxBeveled.setIndeterminate(true);
+					checkBoxBiselado.allowIndeterminateProperty();
+					checkBoxBiselado.setIndeterminate(true);
 				}
 
 
@@ -360,7 +360,7 @@ public class PaintPane extends BorderPane {
 			}
 			checkBoxShadow.setSelected(checkBoxState.getCommonShadowStatus());
 			checkBoxGradient.setSelected(checkBoxState.getCommonGradientStatus());
-			checkBoxBeveled.setSelected(checkBoxState.getCommonBeveledStatus());
+			checkBoxBiselado.setSelected(checkBoxState.getCommonBeveledStatus());
 
 
 		} else {
@@ -371,10 +371,10 @@ public class PaintPane extends BorderPane {
 	private void resetCheckBoxes() {
 		checkBoxShadow.setSelected(false);
 		checkBoxGradient.setSelected(false);
-		checkBoxBeveled.setSelected(false);
+		checkBoxBiselado.setSelected(false);
 		resetCheckBoxState(checkBoxShadow);
 		resetCheckBoxState(checkBoxGradient);
-		resetCheckBoxState(checkBoxBeveled);
+		resetCheckBoxState(checkBoxBiselado);
 	}
 
 

@@ -171,7 +171,6 @@ public class PaintPane extends BorderPane {
 			}
 			canvasState.add(newFigureAux);
 			startPoint = null;
-//			updateCheckBoxesState();
 			redrawCanvas();
 		});
 
@@ -223,7 +222,6 @@ public class PaintPane extends BorderPane {
 
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else statusPane.updateStatus(label.toString());
-//				updateCheckBoxesState();
 				redrawCanvas();
 			}
 		});
@@ -287,8 +285,8 @@ public class PaintPane extends BorderPane {
 			}
 			gc.setFill(figure.getColor());
 			figure.create(0);
-			updateCheckBoxesState();
 		}
+		updateCheckBoxesState();
 	}
 
 	private boolean figureBelongs(FrontFigure<? extends Figure> figure, Point eventPoint) {
@@ -300,8 +298,6 @@ public class PaintPane extends BorderPane {
 			shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 			canvasState.removeAll(selectedFigures);
 			selectedFigures.clear();
-//			updateCheckBoxesState();
-//			redrawCanvas();
 		}
 	}
 
@@ -311,9 +307,9 @@ public class PaintPane extends BorderPane {
 		}
 		ShapeGroup aux = new ShapeGroup();
 		aux.addAll(selectedFigures);
+		shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains)); // elegimos que se desagrupe toodo en vez de separarse en grupos originales porque tiene mas sentido en nuestra opinion
 		shapeGroups.add(aux);
 		selectedFigures.clear();
-//		redrawCanvas();
 	}
 
 	private void ungroupButtonAction() {
@@ -322,7 +318,6 @@ public class PaintPane extends BorderPane {
 		}
 		shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains));
 		selectedFigures.clear();
-//		redrawCanvas();
 	}
 
 	private void updateCheckBoxesState() {

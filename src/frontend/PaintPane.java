@@ -20,6 +20,7 @@ import javafx.scene.control.ColorPicker;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public class PaintPane extends BorderPane {
 
@@ -160,9 +161,6 @@ public class PaintPane extends BorderPane {
 						}
 						selectedFigures.add(figure);
 					}
-					checkBoxGradient.setSelected(figure.getGradientStatus());
-					checkBoxShadow.setSelected(figure.getShadowStatus());
-					checkBoxBiselado.setSelected(figure.getBeveledStatus());
 				}
 				startPoint = null;
 				redrawCanvas();
@@ -173,6 +171,7 @@ public class PaintPane extends BorderPane {
 			}
 			canvasState.add(newFigureAux);
 			startPoint = null;
+			updateCheckBoxesState();
 			redrawCanvas();
 		});
 
@@ -217,14 +216,14 @@ public class PaintPane extends BorderPane {
 							label.append(figure);
 						}
 						found = true;
-						updateCheckBoxesState();
 					}
 				}
 				if (!found && startPoint != null && startPoint.equals(eventPoint)) {
 					selectedFigures.clear();
-					updateCheckBoxesState();
+
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else statusPane.updateStatus(label.toString());
+				updateCheckBoxesState();
 				redrawCanvas();
 			}
 		});
@@ -328,10 +327,38 @@ public class PaintPane extends BorderPane {
 		if (!selectedFigures.isEmpty()) {
 			checkBoxState.resetState();
 
-			for (FrontFigure<? extends Figure> figure : selectedFigures) {
-				checkBoxState.updateState(figure);
-			}
+			boolean mixed = false;
+			boolean auxShadowStatus = selectedFigures.iterator().next().shadowStatus;
+			boolean auxGradientStatus = selectedFigures.iterator().next().gradientStatus;
+			boolean auxBeveledStatus = selectedFigures.iterator().next().beveledStatus;
 
+			boolean auxCurrentShadowStatus;
+			boolean auxCurrentGradientStatus;
+			boolean auxCurrentBeveledStatus;
+
+			for (FrontFigure<? extends Figure> figure : selectedFigures) {
+				if (figure.getShadowStatus() != auxShadowStatus) {
+					mixed = true;
+					checkBoxShadow.allowIndeterminateProperty();
+					checkBoxShadow.setIndeterminate(true);
+				}
+				if (figure.getGradientStatus() != auxGradientStatus) {
+					mixed = true;
+					checkBoxGradient.allowIndeterminateProperty();
+					checkBoxGradient.setIndeterminate(true);
+				}
+				if (figure.getBeveledStatus() != auxBeveledStatus) {
+					mixed = true;
+					checkBoxBiselado.allowIndeterminateProperty();
+					checkBoxBiselado.setIndeterminate(true);
+				}
+
+
+				if (!mixed) {
+					checkBoxState.updateState(figure);
+				}
+
+			}
 			checkBoxShadow.setSelected(checkBoxState.getCommonShadowStatus());
 			checkBoxGradient.setSelected(checkBoxState.getCommonGradientStatus());
 			checkBoxBiselado.setSelected(checkBoxState.getCommonBeveledStatus());

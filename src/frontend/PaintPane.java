@@ -32,7 +32,8 @@ public class PaintPane extends BorderPane {
 	private final GraphicsContext gc = canvas.getGraphicsContext2D();
 
 	private final Color DEFAULT_FILL_COLOR = Color.YELLOW;
-	public static final Color LINE_COLOR = Color.BLACK;
+	private final Color LINE_COLOR = Color.BLACK;
+	private final Color SELECTED_LINE_COLOR = Color.RED;
 
 
 	// Botones Barra Izquierda
@@ -53,7 +54,7 @@ public class PaintPane extends BorderPane {
 	private final CheckBox checkBoxBiselado = new CheckBox("Biselado");
 
 	// Selector de color de relleno
-	private ColorPicker fillColorPicker = new ColorPicker(defaultFillColor);
+	private ColorPicker fillColorPicker = new ColorPicker(DEFAULT_FILL_COLOR);
 
 	// Dibujar una figura
 	private Point startPoint;
@@ -276,9 +277,9 @@ public class PaintPane extends BorderPane {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for (FrontFigure<? extends Figure> figure : canvasState) {
 			if (selectedFigures != null && (selectedFigures.contains(figure))) {
-				gc.setStroke(Color.RED);
+				gc.setStroke(SELECTED_LINE_COLOR);
 			} else {
-				gc.setStroke(CanvasState.LINE_COLOR);
+				gc.setStroke(LINE_COLOR);
 			}
 			if (figure.shadowStatus) {
 				figure.createShadow();

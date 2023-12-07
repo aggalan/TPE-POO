@@ -20,7 +20,6 @@ import javafx.scene.control.ColorPicker;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
 public class PaintPane extends BorderPane {
 
@@ -48,7 +47,7 @@ public class PaintPane extends BorderPane {
 	private final Button descaleButton = new Button("Escalar -");
 	private final CheckBox checkBoxShadow = new CheckBox("Sombra");
 	private final CheckBox checkBoxGradient = new CheckBox("Gradiente");
-	private final CheckBox checkBoxBiselado = new CheckBox("Biselado");
+	private final CheckBox checkBoxBeveled = new CheckBox("Biselado");
 
 	// Selector de color de relleno
 	private ColorPicker fillColorPicker = new ColorPicker(defaultFillColor);
@@ -107,8 +106,8 @@ public class PaintPane extends BorderPane {
 
 		HBox effect = new HBox(10);
 		Label label1 = new Label("Efectos:");
-		CheckBox[] effects = {checkBoxShadow, checkBoxGradient, checkBoxBiselado};
-		effect.getChildren().addAll(label1, checkBoxShadow, checkBoxGradient, checkBoxBiselado);
+		CheckBox[] effects = {checkBoxShadow, checkBoxGradient, checkBoxBeveled};
+		effect.getChildren().addAll(label1, checkBoxShadow, checkBoxGradient, checkBoxBeveled);
 		for (CheckBox checkbox : effects) {
 			checkbox.setMinWidth(10);
 			checkbox.setCursor(Cursor.HAND);
@@ -247,7 +246,7 @@ public class PaintPane extends BorderPane {
 
 		deleteButton.setOnAction(event -> deleteButtonAction());
 
-		checkBoxBiselado.setOnAction(event -> selectedFigures.forEach(figure -> figure.beveledStatus(checkBoxBiselado.isSelected())));
+		checkBoxBeveled.setOnAction(event -> selectedFigures.forEach(figure -> figure.beveledStatus(checkBoxBeveled.isSelected())));
 
 		checkBoxShadow.setOnAction(event -> selectedFigures.forEach(figure -> figure.shadowStatus(checkBoxShadow.isSelected())));
 
@@ -349,8 +348,8 @@ public class PaintPane extends BorderPane {
 				}
 				if (figure.getBeveledStatus() != auxBeveledStatus) {
 					mixed = true;
-					checkBoxBiselado.allowIndeterminateProperty();
-					checkBoxBiselado.setIndeterminate(true);
+					checkBoxBeveled.allowIndeterminateProperty();
+					checkBoxBeveled.setIndeterminate(true);
 				}
 
 
@@ -361,7 +360,7 @@ public class PaintPane extends BorderPane {
 			}
 			checkBoxShadow.setSelected(checkBoxState.getCommonShadowStatus());
 			checkBoxGradient.setSelected(checkBoxState.getCommonGradientStatus());
-			checkBoxBiselado.setSelected(checkBoxState.getCommonBeveledStatus());
+			checkBoxBeveled.setSelected(checkBoxState.getCommonBeveledStatus());
 
 
 		} else {
@@ -372,10 +371,10 @@ public class PaintPane extends BorderPane {
 	private void resetCheckBoxes() {
 		checkBoxShadow.setSelected(false);
 		checkBoxGradient.setSelected(false);
-		checkBoxBiselado.setSelected(false);
+		checkBoxBeveled.setSelected(false);
 		resetCheckBoxState(checkBoxShadow);
 		resetCheckBoxState(checkBoxGradient);
-		resetCheckBoxState(checkBoxBiselado);
+		resetCheckBoxState(checkBoxBeveled);
 	}
 
 

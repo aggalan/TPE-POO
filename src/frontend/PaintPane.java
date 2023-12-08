@@ -21,6 +21,7 @@ import javafx.scene.control.ColorPicker;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class PaintPane extends BorderPane {
@@ -68,6 +69,12 @@ public class PaintPane extends BorderPane {
 	private final StatusPane statusPane;
 
 	private final CheckBoxState checkBoxState = new CheckBoxState();
+
+	Map<CheckBox, Function< FrontFigure<? extends Figure>, Boolean>> statusMap = new HashMap<>() {{
+		put(checkBoxShadow, FrontFigure::getShadowStatus);
+		put(checkBoxGradient, FrontFigure::getGradientStatus);
+		put(checkBoxBiselado, FrontFigure::getBeveledStatus);
+	}};
 
 	// Colores de relleno de cada figura
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
@@ -329,28 +336,11 @@ public class PaintPane extends BorderPane {
 			checkBoxState.resetState();
 
 			boolean mixed = false;
-			boolean auxShadowStatus = selectedFigures.iterator().next().shadowStatus;
-			boolean auxGradientStatus = selectedFigures.iterator().next().gradientStatus;
-			boolean auxBeveledStatus = selectedFigures.iterator().next().beveledStatus;
-
 
 			for (FrontFigure<? extends Figure> figure : selectedFigures) {
-				if (figure.getShadowStatus() != auxShadowStatus) {
-					mixed = true;
-					checkBoxShadow.allowIndeterminateProperty();
-					checkBoxShadow.setIndeterminate(true);
+				for(CheckBox checkBox : statusMap.keySet()) {
+					checkCustomState(checkBox, figure, statusMap.get(checkBox).apply(selectedFigures.iterator().next()), mixed);
 				}
-				if (figure.getGradientStatus() != auxGradientStatus) {
-					mixed = true;
-					checkBoxGradient.allowIndeterminateProperty();
-					checkBoxGradient.setIndeterminate(true);
-				}
-				if (figure.getBeveledStatus() != auxBeveledStatus) {
-					mixed = true;
-					checkBoxBiselado.allowIndeterminateProperty();
-					checkBoxBiselado.setIndeterminate(true);
-				}
-
 
 				if (!mixed) {
 					checkBoxState.updateState(figure);
@@ -366,6 +356,15 @@ public class PaintPane extends BorderPane {
 			resetCheckBoxes();
 		}
 	}
+
+	public void checkCustomState(CheckBox checkBox, FrontFigure<? extends Figure> figure, boolean status, boolean mixed){
+		if (statusMap.get(checkBox).apply(figure) != status) {
+			mixed = true;
+			checkBox.allowIndeterminateProperty();
+			checkBox.setIndeterminate(true);
+		}
+	}
+
 
 	private void resetCheckBoxes() {
 		checkBoxShadow.setSelected(false);

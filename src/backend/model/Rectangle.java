@@ -4,17 +4,18 @@ public class Rectangle extends Figure {
 
     private Point  topLeft;
     private Point bottomRight;
+
+    private Point centerPoint;
     private double height, width;
 
 
 
-    public Rectangle(Point topLeft, Point bottomRight) {
-
-        this.topLeft = topLeft;
-        this.bottomRight = bottomRight;
-        this.width = Math.abs(topLeft.getX() - bottomRight.getX());
-        this.height = Math.abs(topLeft.getY() - bottomRight.getY());
-
+    public Rectangle(Point startPoint, Point endPoint) {
+        centerPoint = new Point((startPoint.getX() + endPoint.getX())/2, (startPoint.getY() + endPoint.getY())/2);
+        width = Math.abs(startPoint.getX() - endPoint.getX());
+        height = Math.abs(startPoint.getY() - endPoint.getY());
+        topLeft = new Point(centerPoint.getX() - width/2, centerPoint.getY() - height/2);
+        bottomRight = new Point(centerPoint.getX() + width/2, centerPoint.getY() + height/2);
     }
 
     @Override
@@ -27,8 +28,8 @@ public class Rectangle extends Figure {
         this.width = width;
     }
 
-    private Point getCenterPoint(){
-        return new Point((bottomRight.getX() + topLeft.getX())/2, (topLeft.getY() + bottomRight.getY())/2);
+    private Point getCenterPoint() {
+        return centerPoint;
     }
 
     public void rotate() {
@@ -92,7 +93,7 @@ public class Rectangle extends Figure {
     public void move(double diffX, double diffY) {
         topLeft.movePoint(diffX, diffY);
         bottomRight.movePoint(diffX, diffY);
-
+        centerPoint = new Point((topLeft.getX() + bottomRight.getX())/2, (topLeft.getY() + bottomRight.getY())/2);
 
     }
 

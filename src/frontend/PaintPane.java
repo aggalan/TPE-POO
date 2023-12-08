@@ -249,6 +249,18 @@ public class PaintPane extends BorderPane {
 				}
 				redrawCanvas();
 			}
+
+			FrontFigure<? extends Figure> transitionFigure = new FrontRectangle<>(new Rectangle(startPoint,eventPoint), gc, fillColorPicker.getValue());
+			for (ToggleButton button : figuresArr) {
+				if (button.isSelected()) {
+					BiFunction<Point, Point, FrontFigure<? extends Figure>> figureFunction = buttonMap.get(button);
+					transitionFigure = figureFunction.apply(startPoint, eventPoint);
+					canvasState.add(transitionFigure);
+					redrawCanvas();
+					canvasState.remove(transitionFigure);
+
+				}
+			}
 		});
 
 

@@ -5,6 +5,7 @@ import backend.model.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -266,6 +267,8 @@ public class PaintPane extends BorderPane {
 
 		descaleButton.setOnAction(event -> selectedFigures.forEach(figure -> figure.getFigure().descale()));
 
+		clearSelectedFigures(toolsArr);
+
 		buttonsBox.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
 		effect.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> redrawCanvas());
 
@@ -379,5 +382,17 @@ public class PaintPane extends BorderPane {
 		checkBox.setIndeterminate(false);
 		checkBox.setAllowIndeterminate(false);
 	}
+
+	private void clearSelectedFigures(ToggleButton[] toolsArr) {
+		for (ToggleButton toggleButton : toolsArr) {
+			toggleButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				if (toggleButton.isSelected()) {
+					selectedFigures.clear();
+					redrawCanvas();
+				}
+			});
+		}
+	}
+
 
 }

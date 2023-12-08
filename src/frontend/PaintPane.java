@@ -5,7 +5,6 @@ import backend.model.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -20,9 +19,9 @@ import javafx.scene.control.ColorPicker;
 
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class PaintPane extends BorderPane {
 
@@ -96,13 +95,14 @@ public class PaintPane extends BorderPane {
 			tool.setCursor(Cursor.HAND);
 		}
 
-		ToggleButton[] figuresArr = {rectangleButton, circleButton, squareButton, ellipseButton};
+		ToggleButton[] figuresArr = {rectangleButton, circleButton, squareButton, ellipseButton, selectionButton};
 
 		Map<ToggleButton, BiFunction<Point, Point, FrontFigure<? extends Figure>>> buttonMap = new HashMap<>() {{
 			put(figuresArr[0], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, fillColorPicker.getValue()));
 			put(figuresArr[1], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, fillColorPicker.getValue()));
 			put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, fillColorPicker.getValue()));
 			put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, fillColorPicker.getValue()));
+			put(figuresArr[4], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, Color.color(0,0,0,0)));
 		}};
 
 		VBox buttonsBox = new VBox(10);
@@ -136,25 +136,24 @@ public class PaintPane extends BorderPane {
 				}
 			}
 			selectedFigures.clear();
-
-
 		});
 
 
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
-//			if (startPoint == null || endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
-//				return;
-//			}
+			if (startPoint == null) {
+				return;
+			}
 			FrontFigure<? extends Figure> newFigureAux = null;
 
 			boolean found = false;
 
 			for (ToggleButton button : figuresArr) {
-				if (button.isSelected()) {
+				if (button.isSelected() && !startPoint.equals(endPoint)) {
 					found = true;
 					BiFunction<Point, Point, FrontFigure<? extends Figure>> figureFunction = buttonMap.get(button);
 					newFigureAux = figureFunction.apply(startPoint, endPoint);
+					selectedFigures.remove(newFigureAux);
 
 				}
 			}
@@ -165,13 +164,12 @@ public class PaintPane extends BorderPane {
 						for (ShapeGroup group : shapeGroups) {
 							if (group.contains(figure)) {
 								selectedFigures.addAll(group);
-								selectedFigures.remove(figure);  //check if there is another way to work around this
 							}
 						}
 						selectedFigures.add(figure);
 					}
 				}
-				startPoint = null;
+//				startPoint = null;
 				redrawCanvas();
 				return;
 			}
@@ -179,7 +177,7 @@ public class PaintPane extends BorderPane {
 				return;
 			}
 			canvasState.add(newFigureAux);
-			startPoint = null;
+//			startPoint = null;
 			redrawCanvas();
 		});
 
@@ -200,13 +198,25 @@ public class PaintPane extends BorderPane {
 			}
 		});
 
+
 		canvas.setOnMouseClicked(event -> {
 			Point eventPoint = new Point(event.getX(), event.getY());
-			if (selectionButton.isSelected() && startPoint != null && startPoint.equals(eventPoint)) {
+			if (selectionButton.isSelected()  && startPoint != null  && startPoint.equals(eventPoint)) {
 				boolean found = false;
 				boolean groupFound;
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
+
+
 				for (FrontFigure<? extends Figure> figure : canvasState) {
+
+//					if (foundFigure != null && selectedFigures.isEmpty()) {
+//						selectedFigures.add(foundFigure);
+//						label.append(foundFigure);
+//						found = true;
+//						break;
+//					}
+
+
 					if (figureBelongs(figure, eventPoint)) {
 						groupFound = false;
 						for (ShapeGroup group : shapeGroups) {
@@ -219,13 +229,14 @@ public class PaintPane extends BorderPane {
 							}
 						}
 						if (!groupFound) {
+//							selectedFigures.clear();
 							selectedFigures.add(figure);
 							label.append(figure);
 						}
 						found = true;
 					}
 				}
-				if (!found ) {
+				if (!found) {
 					selectedFigures.clear();
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else statusPane.updateStatus(label.toString());
@@ -259,6 +270,7 @@ public class PaintPane extends BorderPane {
 
 				}
 			}
+
 		});
 
 

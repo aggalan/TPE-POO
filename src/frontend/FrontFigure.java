@@ -21,7 +21,8 @@ public abstract class FrontFigure<T extends Figure> {
     protected boolean shadowStatus = false;
     protected boolean gradientStatus = false;
     protected boolean beveledStatus = false;
-    protected boolean isShadow = false;
+
+    protected boolean isInvisibleRectangle = false;
 
     public boolean getShadowStatus() {
         return shadowStatus;
@@ -58,6 +59,10 @@ public abstract class FrontFigure<T extends Figure> {
 
     public void beveledStatus(boolean status){
         beveledStatus = status;
+    }
+
+    public void setInvisibleRectangle(boolean status) {
+        isInvisibleRectangle = status;
     }
 
     @Override

@@ -261,6 +261,7 @@ public class PaintPane extends BorderPane {
 				if (button.isSelected()) {
 					BiFunction<Point, Point, FrontFigure<? extends Figure>> figureFunction = buttonMap.get(button);
 					transitionFigure = figureFunction.apply(startPoint, eventPoint);
+					transitionFigure.setInvisibleRectangle(button == selectionButton);
 					canvasState.add(transitionFigure);
 					redrawCanvas();
 					canvasState.remove(transitionFigure);

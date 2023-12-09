@@ -19,12 +19,16 @@ public class FrontRectangle<T extends Rectangle>  extends FrontFigure<T> {
         if (gradientStatus && offset == 0){
             addGradient();
         }
+        if (isInvisibleRectangle) {
+            getGc().setLineDashes(10);
+        }
         getGc().fillRect(rectangle.getTopLeftX() + offset, rectangle.getTopLeftY() + offset, rectangle.getWidth(), rectangle.getHeight());
         getGc().strokeRect(rectangle.getTopLeftX(), rectangle.getTopLeftY(), rectangle.getWidth(), rectangle.getHeight());
         if (beveledStatus && offset == 0){
             addBevel();
         }
         getGc().setLineWidth(1);
+        getGc().setLineDashes(0);
     }
 
     public void drawBorder(){

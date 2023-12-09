@@ -206,17 +206,10 @@ public class PaintPane extends BorderPane {
 				boolean groupFound;
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
 
+				int maxIndex = 0, currentIndex = 0, selectedFiguresSize = selectedFigures.size();
+
 
 				for (FrontFigure<? extends Figure> figure : canvasState) {
-
-//					if (foundFigure != null && selectedFigures.isEmpty()) {
-//						selectedFigures.add(foundFigure);
-//						label.append(foundFigure);
-//						found = true;
-//						break;
-//					}
-
-
 					if (figureBelongs(figure, eventPoint)) {
 						groupFound = false;
 						for (ShapeGroup group : shapeGroups) {
@@ -229,7 +222,11 @@ public class PaintPane extends BorderPane {
 							}
 						}
 						if (!groupFound) {
-//							selectedFigures.clear();
+							currentIndex = canvasState.indexOf(figure);
+							if (currentIndex > maxIndex && selectedFiguresSize <= 1) {
+								maxIndex = currentIndex;
+								selectedFigures.clear();
+							}
 							selectedFigures.add(figure);
 							label.append(figure);
 						}

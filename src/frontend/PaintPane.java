@@ -19,7 +19,6 @@ import javafx.scene.control.ColorPicker;
 
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -57,6 +56,8 @@ public class PaintPane extends BorderPane {
 	// Selector de color de relleno
 	private ColorPicker fillColorPicker = new ColorPicker(DEFAULT_FILL_COLOR);
 
+	private boolean wasDragged = false;
+
 	// Dibujar una figura
 	private Point startPoint;
 
@@ -74,6 +75,9 @@ public class PaintPane extends BorderPane {
 		put(checkBoxGradient, FrontFigure::getGradientStatus);
 		put(checkBoxBiselado, FrontFigure::getBeveledStatus);
 	}};
+
+
+	private Point startPointAux;
 
 	// Colores de relleno de cada figura
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
@@ -130,6 +134,7 @@ public class PaintPane extends BorderPane {
 
 		canvas.setOnMousePressed(event -> {
 			startPoint = new Point(event.getX(), event.getY());
+			startPointAux = new Point(event.getX(), event.getY());
 			for (FrontFigure<? extends Figure> figure : selectedFigures) { // this makes it so when multiple figures selected and you try to select more creating a new imaginary rectangle, it does that insted of moving the selected figures
 				if (figureBelongs(figure, new Point(event.getX(), event.getY()))) {
 					return;
@@ -137,7 +142,6 @@ public class PaintPane extends BorderPane {
 			}
 			selectedFigures.clear();
 		});
-
 
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
@@ -148,7 +152,7 @@ public class PaintPane extends BorderPane {
 
 			boolean found = false;
 
-			StringBuilder label = new StringBuilder("Se selecciono: ");
+			StringBuilder label = new StringBuilder("Se seleccionó: ");
 
 			for (ToggleButton button : figuresArr) {
 				if (button.isSelected() && !startPoint.equals(endPoint)) {
@@ -159,24 +163,27 @@ public class PaintPane extends BorderPane {
 
 				}
 			}
-
-			if (selectionButton.isSelected() && !startPoint.equals(endPoint)) {
-				for (FrontFigure<? extends Figure> figure : canvasState) {
-					if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
-						for (ShapeGroup group : shapeGroups) {
-							if (group.contains(figure)) {
-								selectedFigures.addAll(group);
-								break;
+			if (selectionButton.isSelected() && !startPointAux.equals(endPoint)) {
+				if (wasDragged) {
+					Optional<FrontFigure<? extends Figure>> aux = canvasState.stream().filter(figureAux -> figureBelongs(figureAux, endPoint)).reduce((first, second) -> second);
+					selectedFigures.add(aux.orElse(null));
+				} else {
+					for (FrontFigure<? extends Figure> figure : canvasState) {
+						if (figure.getFigure().belongsInRectangle(new Rectangle(startPoint, endPoint))) {
+							for (ShapeGroup group : shapeGroups) {
+								if (group.contains(figure)) {
+									selectedFigures.addAll(group);
+									break;
+								}
 							}
+							selectedFigures.add(figure);
 						}
-						selectedFigures.add(figure);
 					}
 				}
-
 				selectedFigures.forEach(figureAux -> label.append(figureAux).append(", "));
-
 				label.delete(label.length() - 2, label.length());
 				statusPane.updateStatus(label.toString());
+				wasDragged = false;
 				redrawCanvas();
 				return;
 			}
@@ -187,6 +194,7 @@ public class PaintPane extends BorderPane {
 			redrawCanvas();
 
 		});
+
 
 		canvas.setOnMouseMoved(event -> {
 			Point eventPoint = new Point(event.getX(), event.getY());
@@ -217,15 +225,13 @@ public class PaintPane extends BorderPane {
 		});
 
 
+
 		canvas.setOnMouseClicked(event -> {
 			Point eventPoint = new Point(event.getX(), event.getY());
-			if (selectionButton.isSelected()  && startPoint != null  && startPoint.equals(eventPoint)) {
+			if (selectionButton.isSelected()  && startPointAux != null  && startPointAux.equals(eventPoint)) {
 				boolean found = false;
 				boolean groupFound;
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
-
-				int maxIndex = 0, currentIndex = 0, selectedFiguresSize = selectedFigures.size();
-
 
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figureBelongs(figure, eventPoint)) {
@@ -235,38 +241,39 @@ public class PaintPane extends BorderPane {
 								selectedFigures.clear();
 								selectedFigures.addAll(group);
 								groupFound = true;
-								label.append(group);
 								break;
 							}
 						}
 						if (!groupFound) {
-							currentIndex = canvasState.indexOf(figure);
-							if (currentIndex > maxIndex && selectedFiguresSize <= 1) {
-								maxIndex = currentIndex;
+							if (startPointAux.equals(eventPoint)) {
 								selectedFigures.clear();
-								label = new StringBuilder("Se seleccionó: ");
 							}
 							selectedFigures.add(figure);
-							label.append(figure).append(", ");
 						}
 						found = true;
 					}
 				}
+				selectedFigures.forEach(figureAux -> label.append(figureAux).append(", "));
 				label.delete(label.length() - 2, label.length());
 				if (!found) {
 					selectedFigures.clear();
 					statusPane.updateStatus("Ninguna figura encontrada");
 				}else statusPane.updateStatus(label.toString());
+
 				redrawCanvas();
 			}
 		});
 
+
+
 		canvas.setOnMouseDragged(event -> {
+			wasDragged = false;
 			Point eventPoint = new Point(event.getX(), event.getY());
 			if (selectionButton.isSelected()) {
 				double diffX = (eventPoint.getX() - startPoint.getX());
 				double diffY = (eventPoint.getY() - startPoint.getY());
 				if (!selectedFigures.isEmpty()) {
+					wasDragged = true;
 					for (FrontFigure<? extends Figure> figure : selectedFigures) {
 						figure.getFigure().move(diffX, diffY);
 					}
@@ -275,12 +282,11 @@ public class PaintPane extends BorderPane {
 				redrawCanvas();
 			}
 
-			FrontFigure<? extends Figure> transitionFigure = new FrontRectangle<>(new Rectangle(startPoint,eventPoint), gc, fillColorPicker.getValue());
+			FrontFigure<? extends Figure> transitionFigure;
 			for (ToggleButton button : figuresArr) {
 				if (button.isSelected()) {
 					BiFunction<Point, Point, FrontFigure<? extends Figure>> figureFunction = buttonMap.get(button);
 					transitionFigure = figureFunction.apply(startPoint, eventPoint);
-					transitionFigure.setInvisibleRectangle(button == selectionButton);
 					canvasState.add(transitionFigure);
 					redrawCanvas();
 					canvasState.remove(transitionFigure);
@@ -398,7 +404,6 @@ public class PaintPane extends BorderPane {
 
 	public void checkCustomState(CheckBox checkBox, FrontFigure<? extends Figure> figure, boolean status, boolean mixed){
 		if (statusMap.get(checkBox).apply(figure) != status) {
-			mixed = true;
 			checkBox.allowIndeterminateProperty();
 			checkBox.setIndeterminate(true);
 		}

@@ -244,13 +244,15 @@ public class PaintPane extends BorderPane {
 							if (currentIndex > maxIndex && selectedFiguresSize <= 1) {
 								maxIndex = currentIndex;
 								selectedFigures.clear();
+								label = new StringBuilder("Se seleccionó: ");
 							}
 							selectedFigures.add(figure);
-							label.append(figure);
+							label.append(figure).append(", ");
 						}
 						found = true;
 					}
 				}
+				label.delete(label.length() - 2, label.length());
 				if (!found) {
 					selectedFigures.clear();
 					statusPane.updateStatus("Ninguna figura encontrada");
@@ -258,7 +260,6 @@ public class PaintPane extends BorderPane {
 				redrawCanvas();
 			}
 		});
-
 
 		canvas.setOnMouseDragged(event -> {
 			Point eventPoint = new Point(event.getX(), event.getY());

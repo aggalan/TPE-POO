@@ -148,6 +148,8 @@ public class PaintPane extends BorderPane {
 
 			boolean found = false;
 
+			StringBuilder label = new StringBuilder("Se selecciono: ");
+
 			for (ToggleButton button : figuresArr) {
 				if (button.isSelected() && !startPoint.equals(endPoint)) {
 					found = true;
@@ -164,12 +166,17 @@ public class PaintPane extends BorderPane {
 						for (ShapeGroup group : shapeGroups) {
 							if (group.contains(figure)) {
 								selectedFigures.addAll(group);
+								break;
 							}
 						}
 						selectedFigures.add(figure);
 					}
 				}
-//				startPoint = null;
+
+				selectedFigures.forEach(figureAux -> label.append(figureAux).append(", "));
+
+				label.delete(label.length() - 2, label.length());
+				statusPane.updateStatus(label.toString());
 				redrawCanvas();
 				return;
 			}
@@ -177,25 +184,36 @@ public class PaintPane extends BorderPane {
 				return;
 			}
 			canvasState.add(newFigureAux);
-//			startPoint = null;
 			redrawCanvas();
+
 		});
 
 		canvas.setOnMouseMoved(event -> {
 			Point eventPoint = new Point(event.getX(), event.getY());
-			boolean found = false;
 			StringBuilder label = new StringBuilder();
-			for (FrontFigure<? extends Figure> figure : canvasState) {
-				if (figureBelongs(figure, eventPoint)) {
-					found = true;
-					label.append(figure);
+
+			if (!selectedFigures.isEmpty()) {
+				label.append("Se seleccionó: ");
+				for (FrontFigure<? extends Figure> figure : selectedFigures) {
+					label.append(figure).append(", ");
+				}
+				label.delete(label.length() - 2, label.length());
+			} else {
+				boolean found = false;
+				for (FrontFigure<? extends Figure> figure : canvasState) {
+					if (figureBelongs(figure, eventPoint)) {
+						found = true;
+					}
+				}
+
+				Optional<FrontFigure<? extends Figure>> aux = canvasState.stream().filter(figure -> figureBelongs(figure, eventPoint)).reduce((first, second) -> second);
+				aux.ifPresent(label::append);
+
+				if (!found) {
+					label.append(eventPoint);
 				}
 			}
-			if (found) {
-				statusPane.updateStatus(label.toString());
-			} else {
-				statusPane.updateStatus(eventPoint.toString());
-			}
+			statusPane.updateStatus(label.toString());
 		});
 
 

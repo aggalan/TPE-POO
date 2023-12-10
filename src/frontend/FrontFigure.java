@@ -1,17 +1,11 @@
 package frontend;
 
-import backend.model.Figure;
+import backend.Figure;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public abstract class FrontFigure<T extends Figure> {
 
@@ -84,7 +78,10 @@ public abstract class FrontFigure<T extends Figure> {
     public abstract void create(double offset);
     public abstract void drawBorder();
 
-    public void createShadow() {
+    public void createShadow(boolean status) {
+        if(!status){
+            return;
+        }
         Paint aux = getGc().getFill();
         getGc().setLineWidth(0);
         getGc().setFill(Color.GRAY);

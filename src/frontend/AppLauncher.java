@@ -1,9 +1,12 @@
 package frontend;
 
-import backend.CanvasState;
+import backend.model.Figure;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppLauncher extends Application {
 
@@ -13,7 +16,7 @@ public class AppLauncher extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		CanvasState canvasState = new CanvasState(); // BackEnd
+		List<FrontFigure<? extends Figure>> canvasState = new ArrayList<>(); // BackEnd
 		MainFrame frame = new MainFrame(canvasState);
 		Scene scene = new Scene(frame);
 		primaryStage.setResizable(false);

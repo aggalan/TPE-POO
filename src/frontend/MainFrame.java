@@ -1,6 +1,6 @@
 package frontend;
 
-import backend.model.Figure;
+import backend.Figure;
 import javafx.scene.layout.VBox;
 
 import java.util.List;

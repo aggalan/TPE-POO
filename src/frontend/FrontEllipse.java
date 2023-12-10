@@ -1,6 +1,6 @@
 package frontend;
 
-import backend.model.Ellipse;
+import backend.Ellipse;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.*;
 import javafx.scene.shape.ArcType;

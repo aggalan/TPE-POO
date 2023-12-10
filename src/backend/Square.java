@@ -1,4 +1,4 @@
-package backend.model;
+package backend;
 
 public class Square extends Rectangle {
 

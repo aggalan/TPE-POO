@@ -1,4 +1,4 @@
-package backend.model;
+package backend;
 
 public abstract class Figure {
     protected static double RATIO = 0.25;

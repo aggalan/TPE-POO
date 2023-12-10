@@ -1,7 +1,6 @@
 package frontend;
 
-import backend.model.Figure;
-import frontend.FrontFigure;
+import backend.Figure;
 
 public class CheckBoxState {
     private boolean commonShadowStatus;

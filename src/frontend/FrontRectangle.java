@@ -1,6 +1,6 @@
 package frontend;
 
-import backend.model.Rectangle;
+import backend.Rectangle;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.*;

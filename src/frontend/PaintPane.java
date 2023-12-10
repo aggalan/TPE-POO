@@ -111,7 +111,7 @@ public class PaintPane extends BorderPane {
 			put(figuresArr[0], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, fillColorPicker.getValue()));
 			put(figuresArr[1], (startPoint, endPoint) -> new FrontEllipse<>(new Circle(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, fillColorPicker.getValue()));
 			put(figuresArr[2], (startPoint, endPoint) -> new FrontRectangle<>(new Square(startPoint, Math.abs(endPoint.getX() - startPoint.getX())), gc, fillColorPicker.getValue()));
-			put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.x + startPoint.x) / 2, (Math.abs((endPoint.y + startPoint.y)) / 2)), Math.abs(endPoint.x - startPoint.x), Math.abs(endPoint.y - startPoint.y)), gc, fillColorPicker.getValue()));
+			put(figuresArr[3], (startPoint, endPoint) -> new FrontEllipse<>(new Ellipse(new Point(Math.abs(endPoint.getX() + startPoint.getX()) / 2, (Math.abs((endPoint.getY() + startPoint.getY())) / 2)), Math.abs(endPoint.getX() - startPoint.getX()), Math.abs(endPoint.getY() - startPoint.getY())), gc, fillColorPicker.getValue()));
 			put(figuresArr[4], (startPoint, endPoint) -> new FrontRectangle<>(new Rectangle(startPoint, endPoint), gc, Color.color(0,0,0,0)));
 		}};
 
@@ -400,7 +400,7 @@ public class PaintPane extends BorderPane {
 		checkBoxBiselado.setSelected(checkBoxState.getCommonBeveledStatus());
 	}
 
-	public void checkCustomState(CheckBox checkBox, FrontFigure<? extends Figure> figure, boolean status){
+	private void checkCustomState(CheckBox checkBox, FrontFigure<? extends Figure> figure, boolean status){
 		if (statusMap.get(checkBox).apply(figure) != status) {
 			checkBox.allowIndeterminateProperty();
 			checkBox.setIndeterminate(true);

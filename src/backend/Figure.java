@@ -1,7 +1,7 @@
 package backend;
 
 public abstract class Figure {
-    protected static double RATIO = 0.25;
+    private static final double RATIO = 0.25;
 
     public abstract boolean belongs(Point eventPoint);
     public abstract boolean belongsInRectangle(Rectangle imaginaryRectangle);

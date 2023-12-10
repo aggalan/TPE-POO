@@ -28,7 +28,7 @@ public class AppMenuBar extends MenuBar {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Acerca De");
             alert.setHeaderText("Paint");
-            alert.setContentText("TPE Final POO Diciembre 2023");
+            alert.setContentText("TPE Final POO Diciembre 2023 - Grupo 6");
             alert.showAndWait();
         });
         help.getItems().add(aboutMenuItem);

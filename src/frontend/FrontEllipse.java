@@ -26,19 +26,6 @@ public class FrontEllipse<T extends Ellipse> extends FrontFigure<T> {
         getGc().setLineWidth(1);
     }
 
-    @Override
-    public void drawBorder() {
-        Ellipse ellipse = getFigure();
-        double centerX = ellipse.getCenterPoint().getX();
-        double centerY = ellipse.getCenterPoint().getY();
-        double width = ellipse.getWidth();
-        double height = ellipse.getHeight();
-
-        getGc().setLineWidth(3);
-        getGc().setStroke(Color.RED);
-        getGc().strokeOval(centerX - width / 2, centerY - height / 2, width, height);
-        getGc().setLineWidth(1);
-    }
 
     private void createBeveled(){
         Ellipse ellipse = getFigure();

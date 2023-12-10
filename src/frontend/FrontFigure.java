@@ -2,15 +2,14 @@ package frontend;
 
 import backend.Figure;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.CheckBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 
 public abstract class FrontFigure<T extends Figure> {
 
-    private GraphicsContext gc;
-    private T figure;
+    private final GraphicsContext gc;
+    private final T figure;
     private final Color color;
     protected boolean shadowStatus = false;
     protected boolean gradientStatus = false;
@@ -30,11 +29,6 @@ public abstract class FrontFigure<T extends Figure> {
         return beveledStatus;
     }
 
-
-
-    public void setCheckBoxStatus(CheckBox checkBox){
-
-    }
 
     public FrontFigure(GraphicsContext gc, T figure, Color color) {
         this.gc = gc;
@@ -76,7 +70,7 @@ public abstract class FrontFigure<T extends Figure> {
         return gc;
     }
     public abstract void create(double offset);
-    public abstract void drawBorder();
+
 
     public void createShadow(boolean status) {
         if(!status){

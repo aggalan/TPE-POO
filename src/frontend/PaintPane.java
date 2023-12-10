@@ -1,6 +1,5 @@
 package frontend;
 
-import backend.CanvasState;
 import backend.model.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,7 +24,7 @@ import java.util.function.Function;
 public class PaintPane extends BorderPane {
 
 	// BackEnd
-	private final CanvasState canvasState;
+	private final List<FrontFigure<? extends Figure>> canvasState;
 
 	// Canvas y relacionados
 	private final Canvas canvas = new Canvas(800, 600);
@@ -65,7 +64,7 @@ public class PaintPane extends BorderPane {
 	private Set<FrontFigure<? extends Figure>> selectedFigures = new HashSet<>(); //asi no se puede agregar el mismo puntero dos veces, sirve para seleccion multiple comboinado con group
 	private Set<FrontFigure<? extends Figure>> maintainFigures = new HashSet<>();
 
-	private List<ShapeGroup> shapeGroups = new ArrayList<>();
+	private List<List<FrontFigure<? extends Figure>>> shapeGroups = new ArrayList<>();
 
 	// StatusBar
 	private final StatusPane statusPane;
@@ -82,7 +81,7 @@ public class PaintPane extends BorderPane {
 	private Point startPointAux;
 
 	// Colores de relleno de cada figura
-	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
+	public PaintPane(List<FrontFigure<? extends Figure>> canvasState, StatusPane statusPane) {
 		this.canvasState = canvasState;
 		this.statusPane = statusPane;
 
@@ -179,7 +178,7 @@ public class PaintPane extends BorderPane {
 				} else {
 					for (FrontFigure<? extends Figure> figure : canvasState) {
 						if (figure.getFigure().belongsInRectangle(new Rectangle(startPointAux, endPoint))) {
-							for (ShapeGroup group : shapeGroups) {
+							for (Collection <FrontFigure<? extends Figure>> group : shapeGroups) {
 								if (group.contains(figure)) {
 									selectedFigures.addAll(group);
 									break;
@@ -245,7 +244,7 @@ public class PaintPane extends BorderPane {
 				for (FrontFigure<? extends Figure> figure : canvasState) {
 					if (figureBelongs(figure, eventPoint)) {
 						groupFound = false;
-						for (ShapeGroup group : shapeGroups) {
+						for (Collection<FrontFigure<? extends Figure>> group : shapeGroups) {
 							if (group.contains(figure)) {
 								selectedFigures.clear();
 								selectedFigures.addAll(group);
@@ -371,8 +370,7 @@ public class PaintPane extends BorderPane {
 		if (selectedFigures.size() <= 1) {
 			return;
 		}
-		ShapeGroup aux = new ShapeGroup();
-		aux.addAll(selectedFigures);
+        List<FrontFigure<? extends Figure>> aux = new ArrayList<>(selectedFigures);
 		shapeGroups.removeIf(shapeGroup -> shapeGroup.stream().anyMatch(selectedFigures::contains)); // elegimos que se desagrupe toodo en vez de separarse en grupos originales porque tiene mas sentido en nuestra opinion
 		shapeGroups.add(aux);
 		selectedFigures.clear();

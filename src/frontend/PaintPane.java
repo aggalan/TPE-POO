@@ -183,17 +183,6 @@ public class PaintPane extends BorderPane {
 					maintainFigures.clear();
 					selectedFigures.add(auxFig);
 				} else {
-//					for (FrontFigure<? extends Figure> figure : canvasState) {
-//						if (figure.getFigure().belongsInRectangle(new Rectangle(startPointAux, endPoint))) {
-//							for (Collection <FrontFigure<? extends Figure>> group : shapeGroups) {
-//								if (group.contains(figure)) {
-//									selectedFigures.addAll(group);
-//									break;
-//								}
-//							}
-//							selectedFigures.add(figure);
-//						}
-//					}
 					canvasState.stream().filter(figure -> figure.getFigure().belongsInRectangle(new Rectangle(startPointAux, endPoint))).forEach(figure -> {
 						shapeGroups.stream().filter(group -> group.contains(figure)).forEach(selectedFigures::addAll);
 						selectedFigures.add(figure);
@@ -397,9 +386,6 @@ public class PaintPane extends BorderPane {
 
 		for (FrontFigure<? extends Figure> figure : selectedFigures) {
 			FrontFigure<? extends Figure > auxFig = selectedFigures.iterator().next();
-//			for(CheckBox checkBox : statusMap.keySet()) {
-//				checkCustomState(checkBox, figure, statusMap.get(checkBox).apply(auxFig));
-//			}
 			statusMap.keySet().forEach(checkBox -> checkCustomState(checkBox, figure, statusMap.get(checkBox).apply(auxFig)));
 
 			if (!mixed) {
@@ -441,14 +427,6 @@ public class PaintPane extends BorderPane {
 
 	//funciona para deseleccionar las figuras al clickear uno de los toggle buttons ya que al crear una nueva figura no se debe tener seleccionada una
 	private void clearSelectedFigures(ToggleButton[] toolsArr) {
-//		for (ToggleButton toggleButton : toolsArr) {
-//			toggleButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-//				if (toggleButton.isSelected()) {
-//					selectedFigures.clear();
-//					redrawCanvas();
-//				}
-//			});
-//		}
 		Arrays.stream(toolsArr).forEach(toggleButton -> toggleButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (toggleButton.isSelected()) {
 				selectedFigures.clear();
